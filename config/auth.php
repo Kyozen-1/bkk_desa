@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
         ],
 
+        'fasilitator' => [
+            'driver' => 'session',
+            'provider' => 'fasilitator',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -74,6 +79,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+
+        'fasilitator' => [
+            'driver' => 'eloquent',
+            'model' => App\AkunFasilitator::class,
         ],
 
         // 'users' => [

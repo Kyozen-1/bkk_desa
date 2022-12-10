@@ -77,6 +77,12 @@ class Handler extends ExceptionHandler
             case 'admin':
                 $login = 'admin.login';
                 break;
+            case 'fasilitator' :
+                $login = 'fasilitator.login';
+                break;
+            default:
+                $login = 'admin.login';
+                break;
         }
 
         return redirect()->guest(route($login));

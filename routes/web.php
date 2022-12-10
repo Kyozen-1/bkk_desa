@@ -21,6 +21,16 @@ Route::get('/', 'Auth\AdminLoginController@showLoginForm');
 Auth::routes(['register' => false, 'login' => false]);
 @include('admin.php');
 
-Route::get('admin/login','Auth\AdminLoginController@showLoginForm')->name('admin.login');
-Route::post('admin/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
-Route::get('admin/logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
+@include('fasilitator.php');
+
+Route::prefix('admin')->group(function () {
+    Route::get('/login','Auth\AdminLoginController@showLoginForm')->name('admin.login');
+    Route::post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+    Route::get('/logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
+});
+
+Route::prefix('fasilitator')->group(function () {
+    Route::get('/login','Auth\FasilitatorLoginController@showLoginForm')->name('fasilitator.login');
+    Route::post('/login', 'Auth\FasilitatorLoginController@login')->name('fasilitator.login.submit');
+    Route::get('/logout', 'Auth\FasilitatorLoginController@logout')->name('fasilitator.logout');
+});
