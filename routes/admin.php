@@ -4,6 +4,9 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/dashboard', 'Admin\DashboardController@index')->name('admin.dashboard.index');
     Route::post('/admin/dashboard/change', 'Admin\DashboardController@change')->name('admin.dashboard.change');
 
+    // Peta Persebaran Bkk
+    Route::get('/admin/peta-persebaran-bkk', 'Admin\PetaPersebaranBkkController@index')->name('admin.peta-persebaran-bkk.index');
+
     //Kecamatan
     Route::get('/admin/kecamatan', 'Admin\KecamatanController@index')->name('admin.kecamatan.index');
     Route::get('/admin/kecamatan/detail/{id}', 'Admin\KecamatanController@show');
@@ -21,7 +24,7 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/kelurahan/destroy/{id}','Admin\KelurahanController@destroy');
 
     //Master Fraksi
-    Route::get('/admin/master-fraksi', 'Admin\MasterFraksiController@index')->name('admin.master-fraksi.index');
+    Route::get('/admin/master-partai', 'Admin\MasterFraksiController@index')->name('admin.master-fraksi.index');
     Route::get('/admin/master-fraksi/detail/{id}', 'Admin\MasterFraksiController@show');
     Route::post('/admin/master-fraksi','Admin\MasterFraksiController@store')->name('admin.master-fraksi.store');
     Route::get('/admin/master-fraksi/edit/{id}','Admin\MasterFraksiController@edit');
@@ -46,4 +49,28 @@ Route::group(['middleware' => 'auth:admin'], function(){
 
     // BKK
     Route::get('/admin/bkk', 'Admin\BkkController@index')->name('admin.bkk.index');
+    Route::get('/admin/bkk/create', 'Admin\BkkController@create')->name('admin.bkk.create');
+    Route::post('/admin/bkk/get-aspirator', 'Admin\BkkController@get_aspirator')->name('admin.bkk.get-aspirator');
+    Route::post('/admin/bkk/get-kelurahan', 'Admin\BkkController@get_kelurahan')->name('admin.bkk.get-kelurahan');
+    Route::post('/admin/bkk/store', 'Admin\BkkController@store')->name('admin.bkk.store');
+    Route::get('/admin/bkk/detail/{id}', 'Admin\BkkController@detail');
+    Route::get('/admin/bkk/edit/{id}', 'Admin\BkkController@edit');
+    Route::post('/admin/bkk/update', 'Admin\BkkController@update')->name('admin.bkk.update');
+    Route::get('/admin/bkk/destroy/{id}', 'Admin\BkkController@destroy');
+
+    //Master Tipe Kegiatan
+    Route::get('/admin/master-tipe-kegiatan', 'Admin\MasterTipeKegiatanController@index')->name('admin.master-tipe-kegiatan.index');
+    Route::get('/admin/master-tipe-kegiatan/detail/{id}', 'Admin\MasterTipeKegiatanController@show');
+    Route::post('/admin/master-tipe-kegiatan','Admin\MasterTipeKegiatanController@store')->name('admin.master-tipe-kegiatan.store');
+    Route::get('/admin/master-tipe-kegiatan/edit/{id}','Admin\MasterTipeKegiatanController@edit');
+    Route::post('/admin/master-tipe-kegiatan/update','Admin\MasterTipeKegiatanController@update')->name('admin.master-tipe-kegiatan.update');
+    Route::get('/admin/master-tipe-kegiatan/destroy/{id}','Admin\MasterTipeKegiatanController@destroy');
+
+    //Master Kategori Pembangunan
+    Route::get('/admin/master-kategori-pembangunan', 'Admin\MasterKategoriPembangunanController@index')->name('admin.master-kategori-pembangunan.index');
+    Route::get('/admin/master-kategori-pembangunan/detail/{id}', 'Admin\MasterKategoriPembangunanController@show');
+    Route::post('/admin/master-kategori-pembangunan','Admin\MasterKategoriPembangunanController@store')->name('admin.master-kategori-pembangunan.store');
+    Route::get('/admin/master-kategori-pembangunan/edit/{id}','Admin\MasterKategoriPembangunanController@edit');
+    Route::post('/admin/master-kategori-pembangunan/update','Admin\MasterKategoriPembangunanController@update')->name('admin.master-kategori-pembangunan.update');
+    Route::get('/admin/master-kategori-pembangunan/destroy/{id}','Admin\MasterKategoriPembangunanController@destroy');
 });

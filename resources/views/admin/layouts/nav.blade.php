@@ -197,12 +197,36 @@
                     <span class="label">Dashboard</span>
                 </a>
             </li>
+
+            <li>
+                @if (request()->routeIs('admin.peta-persebaran-bkk.index'))
+                    <a href="{{ route('admin.peta-persebaran-bkk.index') }}" class="active">
+                @else
+                    <a href="{{ route('admin.peta-persebaran-bkk.index') }}">
+                @endif
+                    <i data-acorn-icon="home-garage" class="icon" data-acorn-size="18"></i>
+                    <span class="label">Peta Persebaran BKK</span>
+                </a>
+            </li>
+
+            <li>
+                @if (request()->routeIs('admin.bkk.index'))
+                    <a href="{{ route('admin.bkk.index') }}" class="active">
+                @else
+                    <a href="{{ route('admin.bkk.index') }}">
+                @endif
+                    <i data-acorn-icon="file-data" class="icon" data-acorn-size="18"></i>
+                    <span class="label">BKK Desa</span>
+                </a>
+            </li>
             <li>
                 @if (request()->routeIs('admin.kecamatan.index') ||
                 request()->routeIs('admin.kelurahan.index') ||
                 request()->routeIs('admin.master-fraksi.index') ||
                 request()->routeIs('admin.master-jenis.index') ||
-                request()->routeIs('admin.aspirator.index'))
+                request()->routeIs('admin.aspirator.index') ||
+                request()->routeIs('admin.master-tipe-kegiatan.index') ||
+                request()->routeIs('admin.master-kategori-pembangunan.index'))
                     <a href="#master_data" class="active">
                 @else
                     <a href="#master_data">
@@ -226,7 +250,7 @@
                         @else
                             <a href="{{ route('admin.kelurahan.index') }}">
                         @endif
-                            <span class="label">Kelurahan</span>
+                            <span class="label">Kelurahan/Desa</span>
                         </a>
                     </li>
                     <li>
@@ -235,7 +259,7 @@
                         @else
                             <a href="{{ route('admin.master-fraksi.index') }}">
                         @endif
-                            <span class="label">Master Fraksi</span>
+                            <span class="label">Master Partai</span>
                         </a>
                     </li>
                     <li>
@@ -248,12 +272,30 @@
                         </a>
                     </li>
                     <li>
+                        @if (request()->routeIs('admin.master-tipe-kegiatan.index'))
+                            <a href="{{ route('admin.master-tipe-kegiatan.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.master-tipe-kegiatan.index') }}">
+                        @endif
+                            <span class="label">Master Tipe Kegiatan</span>
+                        </a>
+                    </li>
+                    <li>
                         @if (request()->routeIs('admin.master-jenis.index'))
                             <a href="{{ route('admin.master-jenis.index') }}" class="active">
                         @else
                             <a href="{{ route('admin.master-jenis.index') }}">
                         @endif
                             <span class="label">Master Jenis</span>
+                        </a>
+                    </li>
+                    <li>
+                        @if (request()->routeIs('admin.master-kategori-pembangunan.index'))
+                            <a href="{{ route('admin.master-kategori-pembangunan.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.master-kategori-pembangunan.index') }}">
+                        @endif
+                            <span class="label">Master Kategori Pembangunan</span>
                         </a>
                     </li>
                 </ul>

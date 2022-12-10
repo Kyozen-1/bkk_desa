@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Master Parta | Dashboard')
+@section('title', 'Admin | Master Kategori Pembangunan')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('acorn/acorn-elearning-portal/css/vendor/datatables.min.css') }}" />
@@ -31,12 +31,12 @@
             <div class="row">
             <!-- Title Start -->
             <div class="col-12 col-md-7">
-                <h1 class="mb-0 pb-0 display-4" id="title">Master Partai</h1>
+                <h1 class="mb-0 pb-0 display-4" id="title">Master Kategori Pembangunan</h1>
                 <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
                     <ul class="breadcrumb pt-0">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="#">Master Data</a></li>
-                        <li class="breadcrumb-item"><a href="#">Master Partai</a></li>
+                        <li class="breadcrumb-item"><a href="#">Master Kategori Pembangunan</a></li>
                     </ul>
                 </nav>
             </div>
@@ -53,12 +53,12 @@
         <div class="data-table-rows slim">
             <!-- Table Start -->
             <div class="data-table-responsive-wrapper">
-                <table id="master_fraksi_table" class="data-table nowrap w-100">
+                <table id="master_kategori_pembangunan_table" class="data-table nowrap w-100">
                     <thead>
                         <tr>
                             <th class="text-muted text-small text-uppercase">No</th>
                             <th class="text-muted text-small text-uppercase">Nama</th>
-                            <th class="text-muted text-small text-uppercase">Logo</th>
+                            <th class="text-muted text-small text-uppercase">Satuan</th>
                             <th class="text-muted text-small text-uppercase">Aksi</th>
                         </tr>
                     </thead>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="modal fade" id="addEditModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitle">Tambah Baru</h5>
@@ -76,19 +76,15 @@
                 </div>
                 <div class="modal-body">
                     <span id="form_result"></span>
-                    <form id="master_fraksi_form" class="tooltip-label-end" method="POST" novalidate enctype="multipart/form-data">
+                    <form id="master_kategori_pembangunan_form" class="tooltip-label-end" method="POST" novalidate enctype="multipart/form-data">
                         @csrf
-                        <div class="row">
-                            <div class="mb-3">
-                                <label class="form-label">Nama</label>
-                                <input name="nama" id="nama" type="text" class="form-control" required/>
-                            </div>
+                        <div class="form-group position-relative mb-3">
+                            <label class="form-label">Nama</label>
+                            <input name="nama" id="nama" type="text" class="form-control" required/>
                         </div>
-                        <div class="row">
-                            <div class="mb-3">
-                                <label class="form-label">Logo</label>
-                                <input name="logo" id="logo" type="file" class="dropify" data-height="150" data-allowed-file-extensions="png jpg jpeg" data-show-errors="true" required/>
-                            </div>
+                        <div class="form-group position-relative mb-3">
+                            <label class="form-label">Satuan</label>
+                            <input name="satuan" id="satuan" type="text" class="form-control" required/>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -116,9 +112,11 @@
                                 <label class="form-label">Nama</label>
                                 <input id="detail_nama" type="text" class="form-control" disabled/>
                             </div>
+                        </div>
+                        <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label">Logo</label>
-                                <img src="" alt="" class="img-fluid" id="detail_logo">
+                                <label class="form-label">Satuan</label>
+                                <input id="detail_satuan" type="text" class="form-control" disabled/>
                             </div>
                         </div>
                     </div>
@@ -150,15 +148,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js" integrity="sha512-j3gF1rYV2kvAKJ0Jo5CdgLgSYS7QYmBVVUjduXdoeBkc4NFV4aSRTi+Rodkiy9ht7ZYEwF+s09S43Z1Y+ujUkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function(){
-            $('.dropify').dropify();
-            $('.dropify-wrapper').css('line-height', '3rem');
-            $('#kabupaten_id').select2();
-
-            var dataTables = $('#master_fraksi_table').DataTable({
+            var dataTables = $('#master_kategori_pembangunan_table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('admin.master-fraksi.index') }}",
+                    url: "{{ route('admin.master-kategori-pembangunan.index') }}",
                 },
                 columns:[
                     {
@@ -169,8 +163,8 @@
                         name: 'nama'
                     },
                     {
-                        data: 'logo',
-                        name: 'logo'
+                        data: 'satuan',
+                        name: 'satuan'
                     },
                     {
                         data: 'aksi',
@@ -183,20 +177,19 @@
         $(document).on('click', '.detail', function(){
             var id = $(this).attr('id');
             $.ajax({
-                url: "{{ url('/admin/master-fraksi/detail') }}"+'/'+id,
+                url: "{{ url('/admin/master-kategori-pembangunan/detail') }}"+'/'+id,
                 dataType: "json",
                 success: function(data)
                 {
                     $('#detail-title').text('Detail Data');
                     $('#detail_nama').val(data.result.nama);
-                    $('#detail_logo').attr('src', "{{ asset('images/logo-fraksi') }}" + '/' + data.result.logo);
+                    $('#detail_satuan').val(data.result.satuan);
                     $('#detailModal').modal('show');
                 }
             });
         });
         $('#create').click(function(){
-            $('#master_fraksi_form')[0].reset();
-            $('.dropify-clear').click();
+            $('#master_kategori_pembangunan_form')[0].reset();
             $('#aksi_button').text('Save');
             $('#aksi_button').prop('disabled', false);
             $('.modal-title').text('Add Data');
@@ -204,12 +197,12 @@
             $('#aksi').val('Save');
             $('#form_result').html('');
         });
-        $('#master_fraksi_form').on('submit', function(e){
+        $('#master_kategori_pembangunan_form').on('submit', function(e){
             e.preventDefault();
             if($('#aksi').val() == 'Save')
             {
                 $.ajax({
-                    url: "{{ route('admin.master-fraksi.store') }}",
+                    url: "{{ route('admin.master-kategori-pembangunan.store') }}",
                     method: "POST",
                     data: new FormData(this),
                     dataType: "json",
@@ -228,18 +221,16 @@
                         {
                             html = '<div class="alert alert-danger">'+data.errors+'</div>';
                             $('#aksi_button').prop('disabled', false);
-                            $('.dropify-clear').click();
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#master_kategori_pembangunan_table').DataTable().ajax.reload();
                         }
                         if(data.success)
                         {
                             html = '<div class="alert alert-success">'+data.success+'</div>';
                             $('#aksi_button').prop('disabled', false);
-                            $('#master_fraksi_form')[0].reset();
-                            $('.dropify-clear').click();
+                            $('#master_kategori_pembangunan_form')[0].reset();
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#master_kategori_pembangunan_table').DataTable().ajax.reload();
                         }
 
                         $('#form_result').html(html);
@@ -249,7 +240,7 @@
             if($('#aksi').val() == 'Edit')
             {
                 $.ajax({
-                    url: "{{ route('admin.master-fraksi.update') }}",
+                    url: "{{ route('admin.master-kategori-pembangunan.update') }}",
                     method: "POST",
                     data: new FormData(this),
                     dataType: "json",
@@ -271,10 +262,10 @@
                         if(data.success)
                         {
                             // html = '<div class="alert alert-success">'+ data.success +'</div>';
-                            $('#master_fraksi_form')[0].reset();
+                            $('#master_kategori_pembangunan_form')[0].reset();
                             $('#aksi_button').prop('disabled', false);
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#master_kategori_pembangunan_table').DataTable().ajax.reload();
                             $('#addEditModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
@@ -292,20 +283,12 @@
             var id = $(this).attr('id');
             $('#form_result').html('');
             $.ajax({
-                url: "{{ url('/admin/master-fraksi/edit') }}"+'/'+id,
+                url: "{{ url('/admin/master-kategori-pembangunan/edit') }}"+'/'+id,
                 dataType: "json",
                 success: function(data)
                 {
                     $('#nama').val(data.result.nama);
-                    var lokasi_logo = "{{ asset('images/logo-fraksi') }}"+'/'+data.result.logo;
-                    var fileDropperLogo = $("#logo").dropify();
-
-                    fileDropperLogo = fileDropperLogo.data('dropify');
-                    fileDropperLogo.resetPreview();
-                    fileDropperLogo.clearElement();
-                    fileDropperLogo.settings['defaultFile'] = lokasi_logo;
-                    fileDropperLogo.destroy();
-                    fileDropperLogo.init();
+                    $('#satuan').val(data.result.satuan);
                     $('#hidden_id').val(id);
                     $('.modal-title').text('Edit Data');
                     $('#aksi_button').text('Edit');
@@ -329,7 +312,7 @@
                 if(result.value)
                 {
                     $.ajax({
-                        url: "{{ url('/admin/master-fraksi/destroy') }}" + '/' + id,
+                        url: "{{ url('/admin/master-kategori-pembangunan/destroy') }}" + '/' + id,
                         dataType: "json",
                         beforeSend: function()
                         {
@@ -353,7 +336,7 @@
                             }
                             if(data.success)
                             {
-                                $('#master_fraksi_table').DataTable().ajax.reload();
+                                $('#master_kategori_pembangunan_table').DataTable().ajax.reload();
                                 Swal.fire({
                                     icon: 'success',
                                     title: data.success,

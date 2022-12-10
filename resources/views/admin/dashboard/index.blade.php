@@ -21,9 +21,6 @@
         .select2-selection__arrow {
             height: 36px !important;
         }
-        .select2-container{
-            z-index:100000;
-        }
     </style>
 @endsection
 
@@ -45,6 +42,10 @@
             </div>
         </div>
         <!-- Title and Top Buttons End -->
+        <div class="card">
+            <div class="card-body">
+            </div>
+        </div>
     </div>
 @endsection
 

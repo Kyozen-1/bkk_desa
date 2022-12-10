@@ -60,7 +60,7 @@
                     <thead>
                         <tr>
                             <th class="text-muted text-small text-uppercase">No</th>
-                            <th class="text-muted text-small text-uppercase">Fraksi</th>
+                            <th class="text-muted text-small text-uppercase">Partai</th>
                             <th class="text-muted text-small text-uppercase">Nama</th>
                             <th class="text-muted text-small text-uppercase">Aksi</th>
                         </tr>
@@ -83,9 +83,9 @@
                         @csrf
                         <div class="row">
                             <div class="mb-3">
-                                <label for="master_fraksi_id" class="form-label">Fraksi</label>
+                                <label for="master_fraksi_id" class="form-label">Partai</label>
                                 <select name="master_fraksi_id" id="master_fraksi_id" class="form-control" required>
-                                    <option value="">--- Pilih Fraksi ---</option>
+                                    <option value="">--- Pilih Partai ---</option>
                                     @foreach ($master_fraksi as $id => $nama)
                                         <option value="{{$id}}">{{$nama}}</option>
                                     @endforeach
@@ -121,7 +121,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label">Fraksi</label>
+                                <label class="form-label">Partai</label>
                                 <input id="detail_master_fraksi" type="text" class="form-control" disabled/>
                             </div>
                             <div class="mb-3">
@@ -302,7 +302,7 @@
                 success: function(data)
                 {
                     $('#nama').val(data.result.nama);
-                    $("[name='master_fraksi_id']").val(data.resut.master_fraksi_id).trigger('change');
+                    $("[name='master_fraksi_id']").val(data.result.master_fraksi_id).trigger('change');
                     $('#hidden_id').val(id);
                     $('.modal-title').text('Edit Data');
                     $('#aksi_button').text('Edit');
