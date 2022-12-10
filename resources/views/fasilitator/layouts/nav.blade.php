@@ -197,6 +197,17 @@
                     <span class="label">Dashboard</span>
                 </a>
             </li>
+
+            <li>
+                @if (request()->routeIs('fasilitator.bkk.index'))
+                    <a href="{{ route('fasilitator.bkk.index') }}" class="active">
+                @else
+                    <a href="{{ route('fasilitator.bkk.index') }}">
+                @endif
+                    <i data-acorn-icon="file-data" class="icon" data-acorn-size="18"></i>
+                    <span class="label">BKK Desa</span>
+                </a>
+            </li>
         </ul>
     </div>
     <!-- Menu End -->

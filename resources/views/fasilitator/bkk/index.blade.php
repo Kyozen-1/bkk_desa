@@ -1,5 +1,5 @@
-@extends('admin.layouts.app')
-@section('title', 'Admin | BKK Desa')
+@extends('fasilitator.layouts.app')
+@section('title', 'Fasilitator | BKK Desa')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('acorn/acorn-elearning-portal/css/vendor/datatables.min.css') }}" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/fontawesome.min.css" integrity="sha512-RvQxwf+3zJuNwl4e0sZjQeX7kUa3o82bDETpgVCH2RiwYSZVDdFJ7N/woNigN/ldyOOoKw8584jM4plQdt8bhA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        .select2 {
+            width: 100% !important;
+        }
         .select2.select2-container.select2-container--default {
             width: 100%;
         }
@@ -37,7 +40,7 @@
                 <h1 class="mb-0 pb-0 display-4" id="title">BKK Desa</h1>
                 <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
                     <ul class="breadcrumb pt-0">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('fasilitator.dashboard.index') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="#">Master Data</a></li>
                         <li class="breadcrumb-item"><a href="#">BKK Desa</a></li>
                     </ul>
@@ -47,17 +50,13 @@
             </div>
         </div>
         <!-- Title and Top Buttons End -->
-        <div class="row mb-3">
-            <div class="col-12" style="text-align: right">
-                <a class="btn btn-outline-primary waves-effect waves-light" href="{{ route('admin.bkk.create') }}">Tambah</a>
-            </div>
         </div>
 
         <div class="card mb-3">
             <div class="card-body">
                 <h2 class="small-title">Filter Data</h2>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <div class="form-group position-relative">
                             <label for="filter_kecamatan_id" class="form-label">Kecamatan</label>
                             <select name="filter_kecamatan_id" id="filter_kecamatan_id" class="form-control">
@@ -68,7 +67,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <div class="form-group position-relative">
                             <label for="filter_kelurahan_id" class="form-label">Kelurahan</label>
                             <select name="filter_kelurahan_id" id="filter_kelurahan_id" class="form-control" disabled>
@@ -76,7 +75,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <div class="form-group position-relative">
                             <label for="filter_tahun" class="form-label">Tahun</label>
                             <select name="filter_tahun" id="filter_tahun" class="form-control">
@@ -84,7 +83,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <div class="form-group position-relative">
                             <label for="filter_fraksi_id" class="form-label">Partai</label>
                             <select name="filter_fraksi_id" id="filter_fraksi_id" class="form-control">
@@ -95,7 +94,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <div class="form-group position-relative">
                             <div class="form-group position-relative">
                                 <label for="filter_aspirator_id" class="form-label">Aspirator</label>
@@ -291,7 +290,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('admin.bkk.index') }}",
+                        url: "{{ route('fasilitator.bkk.index') }}",
                         data: {
                             filter_kecamatan_id:filter_kecamatan_id,
                             filter_kelurahan_id:filter_kelurahan_id,
@@ -399,7 +398,7 @@
         $(document).on('click', '.detail', function(){
             var id = $(this).attr('id');
             $.ajax({
-                url: "{{ url('/admin/bkk/detail') }}" + '/' + id,
+                url: "{{ url('/fasilitator/bkk/detail') }}" + '/' + id,
                 dataType: "json",
                 success: function(data)
                 {

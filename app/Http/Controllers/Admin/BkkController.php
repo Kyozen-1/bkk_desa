@@ -92,10 +92,26 @@ class BkkController extends Controller
                 ->addColumn('master_fraksi', function($data){
                     return $data->aspirator->master_fraksi->nama;
                 })
-                ->editColumn('foto_before', function($data){
-                    return '<img src="'.asset('images/foto-bkk/'.$data->foto_before).'" style="width:5rem;">';
+                ->addColumn('foto', function($data){
+                    if($data->foto_after)
+                    {
+                        return '<img src="'.asset('images/foto-bkk/'.$data->foto_after).'" style="width:5rem;" title="Foto Setelah">';
+                    } else {
+                        return '<img src="'.asset('images/foto-bkk/'.$data->foto_before).'" style="width:5rem;" title="Foto Sebelum">';
+                    }
                 })
-                ->rawColumns(['aksi', 'foto_before'])
+                ->editColumn('status_konfirmasi', function($data){
+                    if($data->status_konfirmasi == 'ya')
+                    {
+                        $html = '<i class="fas fa-check text-success" title="Sudah Di Konfirmasi"></i>';
+                    }
+                    if($data->status_konfirmasi == 'tidak')
+                    {
+                        $html = '<i class="fas fa-minus text-danger" title="Belum Di Konfirmasi"></i>';
+                    }
+                    return $html;
+                })
+                ->rawColumns(['aksi', 'foto', 'status_konfirmasi'])
                 ->make(true);
         }
         $master_kecamatan = Kecamatan::pluck('nama', 'id');
