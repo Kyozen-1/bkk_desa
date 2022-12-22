@@ -6,6 +6,13 @@ Route::group(['middleware' => 'auth:admin'], function(){
 
     // Peta Persebaran Bkk
     Route::get('/admin/peta-persebaran-bkk', 'Admin\PetaPersebaranBkkController@index')->name('admin.peta-persebaran-bkk.index');
+    Route::get('/admin/peta-persebaran-bkk/get-data', 'Admin\PetaPersebaranBkkController@get_data')->name('admin.peta-persebaran-bkk.get-data');
+    Route::post('/admin/peta-persebaran-bkk/filter', 'Admin\PetaPersebaranBkkController@filter_data')->name('admin.peta-persebaran-bkk.filter');
+
+    // Peta Per Kelurahan
+    Route::get('/admin/peta-per-kelurahan', 'Admin\PetaPerKelurahanController@index')->name('admin.peta-per-kelurahan.index');
+    Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/{id}', 'Admin\PetaPerKelurahanController@get_data_kelurahan');
+    Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/detail/{id}', 'Admin\PetaPerKelurahanController@detail');
 
     //Kecamatan
     Route::get('/admin/kecamatan', 'Admin\KecamatanController@index')->name('admin.kecamatan.index');

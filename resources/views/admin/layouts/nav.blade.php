@@ -197,16 +197,36 @@
                     <span class="label">Dashboard</span>
                 </a>
             </li>
-
             <li>
-                @if (request()->routeIs('admin.peta-persebaran-bkk.index'))
-                    <a href="{{ route('admin.peta-persebaran-bkk.index') }}" class="active">
+                @if (request()->routeIs('admin.peta-persebaran-bkk.index') ||
+                request()->routeIs('admin.peta-per-kelurahan.index'))
+                    <a href="#master_data" class="active">
                 @else
-                    <a href="{{ route('admin.peta-persebaran-bkk.index') }}">
+                    <a href="#master_data">
                 @endif
-                    <i data-acorn-icon="home-garage" class="icon" data-acorn-size="18"></i>
-                    <span class="label">Peta Persebaran BKK</span>
+                    <i data-acorn-icon="align-justify" class="icon" data-acorn-size="18"></i>
+                    <span class="label">Peta</span>
                 </a>
+                <ul id="master_data">
+                    <li>
+                        @if (request()->routeIs('admin.peta-persebaran-bkk.index'))
+                            <a href="{{ route('admin.peta-persebaran-bkk.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.peta-persebaran-bkk.index') }}">
+                        @endif
+                            <span class="label">Persebaran BKK</span>
+                        </a>
+                    </li>
+                    <li>
+                        @if (request()->routeIs('admin.peta-per-kelurahan.index'))
+                            <a href="{{ route('admin.peta-per-kelurahan.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.peta-per-kelurahan.index') }}">
+                        @endif
+                            <span class="label">Peta Per Kelurahan</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li>

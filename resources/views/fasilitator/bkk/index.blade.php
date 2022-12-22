@@ -429,7 +429,7 @@
             if($(this).val() != '')
             {
                 $.ajax({
-                    url: "{{ route('admin.bkk.get-kelurahan') }}",
+                    url: "{{ route('fasilitator.bkk.get-kelurahan') }}",
                     method: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -455,7 +455,7 @@
             if($(this).val() != '')
             {
                 $.ajax({
-                    url: "{{ route('admin.bkk.get-aspirator') }}",
+                    url: "{{ route('fasilitator.bkk.get-aspirator') }}",
                     method: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",

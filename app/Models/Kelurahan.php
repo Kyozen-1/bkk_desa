@@ -18,4 +18,9 @@ class Kelurahan extends Model
     {
         return $this->hasMany('App\Models\Bkk', 'kelurahan_id');
     }
+
+    public function koordinat_kelurahan()
+    {
+        return $this->hasMany('App\Models\KoordinatKelurahan', 'kelurahan_id');
+    }
 }
