@@ -23,6 +23,18 @@
 <script src="{{ asset('acorn/acorn-elearning-portal/js/base/search.js') }}"></script>
 <script src="{{ asset('acorn/acorn-elearning-portal/js/base/settings.js') }}"></script>
 <!-- Template Base Scripts End -->
+<script>
+    const settings = new Settings({
+        attributes: {
+            color: "light-green",
+            navcolor: "dark",
+            behaviour: "unpinned",
+            layout: "boxed",
+            radius: "rounded",
+            placement: "vertical",
+        }
+    });
+</script>
 <!-- Page Specific Scripts Start -->
 
 <script src="{{ asset('acorn/acorn-elearning-portal/js/cs/glide.custom.js') }}"></script>
@@ -34,7 +46,7 @@
 <script src="{{ asset('acorn/acorn-elearning-portal/js/common.js') }}"></script>
 <script src="{{ asset('acorn/acorn-elearning-portal/js/scripts.js') }}"></script>
 <!-- Page Specific Scripts End -->
-<script>
+{{-- <script>
     const settings = new Settings({
         attributes: {
             color: "{{Auth::guard('admin')->user()->color_layout?Auth::guard('admin')->user()->color_layout:'light-blue'}}",
@@ -70,5 +82,5 @@
             }
         });
     });
-</script>
+</script> --}}
 @yield('js')

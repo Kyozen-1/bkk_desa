@@ -29,13 +29,29 @@
 class Settings {
   get options() {
     return {
+    //   attributes: {
+    //     placement: 'vertical',
+    //     behaviour: 'pinned',
+    //     layout: 'fluid',
+    //     radius: 'rounded',
+    //     color: 'light-blue',
+    //     navcolor: 'default',
+    //   },
+    // attributes: {
+    //     color: "light-green",
+    //     navcolor: "dark",
+    //     behaviour: "unpinned",
+    //     layout: "boxed",
+    //     radius: "rounded",
+    //     placement: "vertical",
+    // },
       attributes: {
         placement: 'vertical',
-        behaviour: 'pinned',
-        layout: 'fluid',
+        behaviour: 'unpinned',
+        layout: 'boxed',
         radius: 'rounded',
-        color: 'light-blue',
-        navcolor: 'default',
+        color: 'light-green',
+        navcolor: 'dark',
       },
       storagePrefix: 'acorn-standard-',
       showSettings: true,
