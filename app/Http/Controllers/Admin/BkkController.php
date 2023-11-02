@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use RealRashid\SweetAlert\Facades\Alert;
+use Maatwebsite\Excel\Facades\Excel;
 use DB;
 use Validator;
 use DataTables;
@@ -22,6 +23,7 @@ use App\Models\Kelurahan;
 use App\Models\Kecamatan;
 use App\Models\MasterTipeKegiatan;
 use App\Models\MasterKategoriPembangunan;
+use App\Imports\BkkImport;
 
 class BkkController extends Controller
 {
@@ -117,10 +119,16 @@ class BkkController extends Controller
         $master_kecamatan = Kecamatan::pluck('nama', 'id');
         $master_fraksi = MasterFraksi::pluck('nama', 'id');
         $master_jenis = MasterJenis::pluck('nama', 'id');
+        $kecamatan = Kecamatan::pluck('nama', 'id');
+        $master_tipe_kegiatan = MasterTipeKegiatan::pluck('nama', 'id');
+        $master_kategori_pembangunans = MasterKategoriPembangunan::all();
         return view('admin.bkk.index', [
             'master_kecamatan' => $master_kecamatan,
             'master_fraksi' => $master_fraksi,
-            'master_jenis' => $master_jenis
+            'master_jenis' => $master_jenis,
+            'kecamatan' => $kecamatan,
+            'master_tipe_kegiatan' => $master_tipe_kegiatan,
+            'master_kategori_pembangunans' => $master_kategori_pembangunans
         ]);
     }
 
@@ -367,5 +375,33 @@ class BkkController extends Controller
         File::delete(public_path('images/foto_bkk/'.$gambarName));
 
         $bkk->delete();
+    }
+
+    public function impor(Request $request)
+    {
+        // dd($request->all());
+        $file = $request->file('file_impor');
+
+        $data = [
+            'master_fraksi_id' => $request->master_fraksi_id,
+            'aspirator_id' => $request->aspirator_id,
+            'tipe_kegiatan_id' => $request->tipe_kegiatan_id,
+            'master_jenis_id' => $request->master_jenis_id,
+            'master_kategori_pembangunan_id' => $request->master_kategori_pembangunan_id,
+            'kecamatan_id' => $request->kecamatan_id,
+            'kelurahan_id' => $request->kelurahan_id
+        ];
+        // import data
+        Excel::import(new BkkImport($data), $file);
+
+        $msg = [session('import_status'), session('import_message')];
+
+        if ($msg[0]) {
+            Alert::success('Berhasil', $msg[1]);
+            return redirect()->route('admin.bkk.index');
+        } else {
+            Alert::error('Gagal', $msg[1]);
+            return redirect()->route('admin.bkk.index');
+        }
     }
 }

@@ -3,6 +3,15 @@
 Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/dashboard', 'Admin\DashboardController@index')->name('admin.dashboard.index');
     Route::post('/admin/dashboard/change', 'Admin\DashboardController@change')->name('admin.dashboard.change');
+    Route::prefix('admin')->group(function(){
+        Route::prefix('dashboard')->group(function(){
+            Route::prefix('grafik')->group(function(){
+                Route::get('/grafik-bkk-desa-perbulan', 'Admin\DashboardController@grafik_bkk_desa_perbulan')->name('admin.dashboard.grafik-bkk-desa-perbulan');
+                Route::get('/grafik-bkk-desa-perpartai', 'Admin\DashboardController@grafik_bkk_desa_perpartai')->name('admin.dashboard.grafik-bkk-desa-perpartai');
+                Route::get('/grafik-apbd-papbd-bkk-desa', 'Admin\DashboardController@grafik_apbd_papbd_bkk_desa')->name('admin.dashboard.grafik-apbd-papbd-bkk-desa');
+            });
+        });
+    });
 
     // Peta Persebaran Bkk
     Route::get('/admin/peta-persebaran-bkk', 'Admin\PetaPersebaranBkkController@index')->name('admin.peta-persebaran-bkk.index');
@@ -64,6 +73,7 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/bkk/edit/{id}', 'Admin\BkkController@edit');
     Route::post('/admin/bkk/update', 'Admin\BkkController@update')->name('admin.bkk.update');
     Route::get('/admin/bkk/destroy/{id}', 'Admin\BkkController@destroy');
+    Route::post('/admin/bkk/impor', 'Admin\BkkController@impor')->name('admin.bkk.impor');
 
     //Master Tipe Kegiatan
     Route::get('/admin/master-tipe-kegiatan', 'Admin\MasterTipeKegiatanController@index')->name('admin.master-tipe-kegiatan.index');
@@ -80,4 +90,18 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/master-kategori-pembangunan/edit/{id}','Admin\MasterKategoriPembangunanController@edit');
     Route::post('/admin/master-kategori-pembangunan/update','Admin\MasterKategoriPembangunanController@update')->name('admin.master-kategori-pembangunan.update');
     Route::get('/admin/master-kategori-pembangunan/destroy/{id}','Admin\MasterKategoriPembangunanController@destroy');
+
+    Route::prefix('admin')->group(function(){
+        Route::prefix('manajemen-akun')->group(function(){
+            Route::prefix('fasilitator')->group(function(){
+                Route::get('/', 'Admin\ManajemenAkun\FasilitatorController@index')->name('admin.manajemen-akun.fasilitator.index');
+                Route::get('/detail/{id}', 'Admin\ManajemenAkun\FasilitatorController@show');
+                Route::post('','Admin\ManajemenAkun\FasilitatorController@store')->name('admin.manajemen-akun.fasilitator.store');
+                Route::get('/edit/{id}', 'Admin\ManajemenAkun\FasilitatorController@edit')->name('admin.manajemen-akun.fasilitator.edit');
+                Route::post('/update','Admin\ManajemenAkun\FasilitatorController@update')->name('admin.manajemen-akun.fasilitator.update');
+                Route::post('/change-password','Admin\ManajemenAkun\FasilitatorController@change_password')->name('admin.manajemen-akun.fasilitator.change-password');
+                Route::post('/destroy','Admin\ManajemenAkun\FasilitatorController@destroy')->name('admin.manajemen-akun.fasilitator.destroy');
+            });
+        });
+    });
 });

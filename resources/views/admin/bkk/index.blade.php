@@ -50,6 +50,8 @@
         <div class="row mb-3">
             <div class="col-12" style="text-align: right">
                 <a class="btn btn-outline-primary waves-effect waves-light" href="{{ route('admin.bkk.create') }}">Tambah</a>
+                <a class="btn btn-outline-secondary waves-effect waves-light" href="{{ asset('template/templat_bkk_desa_kabupaten_madiun.xlsx') }}" title="Download Contoh Template Impor BKK">Template Impor</a>
+                <button class="btn btn-outline-success waves-effect waves-light" type="button" id="btn_impor_bkk" title="Impor BKK">Impor</button>
             </div>
         </div>
 
@@ -258,6 +260,105 @@
             </div>
         </div>
     </div>
+
+    <div id="imporModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imporModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="imporModalLabel">Impor BKK</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span id="form_result"></span>
+                    <form class="form-horizontal" action="{{ route('admin.bkk.impor') }}" method="POST" data-parsley-validate novalidate enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative">
+                                    <label for="master_fraksi_id" class="form-label">Partai</label>
+                                    <select name="master_fraksi_id" id="master_fraksi_id" class="form-control" required>
+                                        <option value="">--- Pilih Partai ---</option>
+                                        @foreach ($master_fraksi as $id => $nama)
+                                            <option value="{{$id}}">{{$nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative mb-3">
+                                    <label for="aspirator_id" class="form-label">Aspirator</label>
+                                    <select name="aspirator_id" id="aspirator_id" class="form-control" disabled required>
+                                        <option value="">--- Pilih Aspirator ---</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="position-relative form-group mb-3">
+                                    <label for="tipe_kegiatan_id" class="form-label">Tipe Kegiatan</label>
+                                    <select name="tipe_kegiatan_id" id="tipe_kegiatan_id" class="form-control" required>
+                                        <option value="">--- Pilih Tipe Kegiatan ---</option>
+                                        @foreach ($master_tipe_kegiatan as $id => $nama)
+                                            <option value="{{$id}}">{{$nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative mb-3">
+                                    <label for="master_jenis_id" class="form-label">Jenis</label>
+                                    <select name="master_jenis_id" id="master_jenis_id" class="form-control" required>
+                                        <option value="">--- Pilih Jenis ---</option>
+                                        @foreach ($master_jenis as $id => $nama)
+                                            <option value="{{$id}}">{{$nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative">
+                                    <label for="master_kategori_pembangunan_id" class="form-label">Kategori Pembangunan</label>
+                                    <select name="master_kategori_pembangunan_id" id="master_kategori_pembangunan_id" class="form-control" required>
+                                        <option value="">--- Pilih Kategori Pembangunan ---</option>
+                                        @foreach ($master_kategori_pembangunans as $master_kategori_pembangunan)
+                                            <option value="{{$master_kategori_pembangunan->id}}">{{$master_kategori_pembangunan->nama}} ({{$master_kategori_pembangunan->satuan}})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="position-relative form-group mb-3">
+                                    <label for="kecamatan_id" class="form-label">Kecamatan</label>
+                                    <select name="kecamatan_id" id="kecamatan_id" class="form-control" required>
+                                        <option value="">--- Pilih Kecamatan ---</option>
+                                        @foreach ($kecamatan as $id => $nama)
+                                            <option value="{{$id}}">{{$nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="position-relative form-group mb-3">
+                                    <label for="kelurahan_id" class="form-label">Kelurahan/Desa</label>
+                                    <select name="kelurahan_id" id="kelurahan_id" class="form-control" disabled required>
+                                        <option value="">--- Pilih Kelurahan ---</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="file" name="file_impor" required class="dropify" data-height="150">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light waves-effect width-md waves-light" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary waves-effect width-md waves-light">Save</button>
+                </div>
+            </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 @endsection
 
 @section('js')
@@ -279,6 +380,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js" integrity="sha512-j3gF1rYV2kvAKJ0Jo5CdgLgSYS7QYmBVVUjduXdoeBkc4NFV4aSRTi+Rodkiy9ht7ZYEwF+s09S43Z1Y+ujUkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function(){
+            $('.dropify').dropify();
             $('#filter_kecamatan_id').select2();
             $('#filter_kelurahan_id').select2();
             $('#filter_tahun').select2();
@@ -394,6 +496,34 @@
                 $('#bkk_table').DataTable().destroy();
                 bkk_datatable(filter_kecamatan_id, filter_kelurahan_id, filter_tahun, filter_fraksi_id, filter_aspirator_id);
             });
+
+            $('#master_fraksi_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#aspirator_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#tipe_kegiatan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#master_jenis_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#master_kategori_pembangunan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#kecamatan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#kelurahan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
         });
 
         $(document).on('click', '.detail', function(){
@@ -485,6 +615,77 @@
             for(var i = 0; i < 21; i++)
             {
                 $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+            }
+        });
+
+        $('#btn_impor_bkk').click(function(){
+            $('.dropify-clear').click();
+            $("[name='master_fraksi_id']").val('').trigger('change');
+
+            $("[name='aspirator_id']").val('').trigger('change');
+
+            $("[name='tipe_kegiatan_id']").val('').trigger('change');
+
+            $("[name='master_jenis_id']").val('').trigger('change');
+
+            $("[name='master_kategori_pembangunan_id']").val('').trigger('change');
+
+            $("[name='kecamatan_id']").val('').trigger('change');
+
+            $("[name='kelurahan_id']").val('').trigger('change');
+
+            $('#imporModal').modal('show');
+        });
+
+        $('#master_fraksi_id').change(function(){
+            if($(this).val() != '')
+            {
+                $.ajax({
+                    url: "{{ route('admin.bkk.get-aspirator') }}",
+                    method: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:$(this).val()
+                    },
+                    success: function(data)
+                    {
+                        $('#aspirator_id').empty();
+                        $('#aspirator_id').prop('disabled', false);
+                        $('#aspirator_id').append('<option value="">--- Pilih Aspirator---</option>');
+                        $.each(data, function(id, nama){
+                            $('#aspirator_id').append(new Option(nama, id));
+                        });
+                    }
+                });
+            } else {
+                $("[name='aspirator_id']").val('').trigger('change');
+                $('#aspirator_id').prop('disabled', true);
+            }
+        });
+
+        $('#kecamatan_id').change(function(){
+            if($(this).val() != '')
+            {
+                $.ajax({
+                    url: "{{ route('admin.bkk.get-kelurahan') }}",
+                    method: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:$(this).val()
+                    },
+                    success: function(data)
+                    {
+                        $('#kelurahan_id').empty();
+                        $('#kelurahan_id').prop('disabled', false);
+                        $('#kelurahan_id').append('<option value="">--- Pilih Kelurahan---</option>');
+                        $.each(data, function(id, nama){
+                            $('#kelurahan_id').append(new Option(nama, id));
+                        });
+                    }
+                });
+            } else {
+                $("[name='kelurahan_id']").val('').trigger('change');
+                $('#kelurahan_id').prop('disabled', true);
             }
         });
     </script>

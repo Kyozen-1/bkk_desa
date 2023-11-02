@@ -320,6 +320,28 @@
                     </li>
                 </ul>
             </li>
+
+            <li>
+                @if (request()->routeIs('admin.manajemen-akun.fasilitator.index'))
+                    <a href="#manajemen_akun" class="active">
+                @else
+                    <a href="#manajemen_akun">
+                @endif
+                    <i data-acorn-icon="align-justify" class="icon" data-acorn-size="18"></i>
+                    <span class="label">Manajemen Akun</span>
+                </a>
+                <ul id="manajemen_akun">
+                    <li>
+                        @if (request()->routeIs('admin.manajemen-akun.fasilitator.index'))
+                            <a href="{{ route('admin.manajemen-akun.fasilitator.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.manajemen-akun.fasilitator.index') }}">
+                        @endif
+                            <span class="label">Fasilitator</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
     <!-- Menu End -->
