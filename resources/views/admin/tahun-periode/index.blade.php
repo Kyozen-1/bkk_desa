@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Master Partai | Dashboard')
+@section('title', 'Master Partai | Master Data | Tahun Periode')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('acorn/acorn-elearning-portal/css/vendor/datatables.min.css') }}" />
@@ -19,7 +19,7 @@
             height: 41px !important;
         }
         .select2-selection__arrow {
-            height: 36px !important;
+            height: 0px !important;
         }
     </style>
 @endsection
@@ -31,12 +31,12 @@
             <div class="row">
             <!-- Title Start -->
             <div class="col-12 col-md-7">
-                <h1 class="mb-0 pb-0 display-4" id="title">Master Partai</h1>
+                <h1 class="mb-0 pb-0 display-4" id="title">Tahun Periode</h1>
                 <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
                     <ul class="breadcrumb pt-0">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="#">Master Data</a></li>
-                        <li class="breadcrumb-item"><a href="#">Master Partai</a></li>
+                        <li class="breadcrumb-item"><a href="#">Tahun Periode</a></li>
                     </ul>
                 </nav>
             </div>
@@ -53,14 +53,14 @@
         <div class="data-table-rows slim">
             <!-- Table Start -->
             <div class="data-table-responsive-wrapper">
-                <table id="master_fraksi_table" class="data-table nowrap w-100">
+                <table id="tahun_periode_table" class="data-table w-100">
                     <thead>
                         <tr>
-                            <th class="text-muted text-small text-uppercase">No</th>
-                            <th class="text-muted text-small text-uppercase">Nama</th>
-                            <th class="text-muted text-small text-uppercase">Logo</th>
-                            <th class="text-muted text-small text-uppercase">Warna</th>
-                            <th class="text-muted text-small text-uppercase">Aksi</th>
+                            <th class="text-muted text-small text-uppercase" width="15%">No</th>
+                            <th class="text-muted text-small text-uppercase" width="35%">Jangka Tahun</th>
+                            <th class="text-muted text-small text-uppercase" width="20%">Status</th>
+                            <th class="text-muted text-small text-uppercase" width="15%">Status Hubungan</th>
+                            <th class="text-muted text-small text-uppercase" width="15%">Aksi</th>
                         </tr>
                     </thead>
                 </table>
@@ -68,6 +68,7 @@
             <!-- Table End -->
         </div>
     </div>
+
     <div class="modal fade" id="addEditModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -77,22 +78,9 @@
                 </div>
                 <div class="modal-body">
                     <span id="form_result"></span>
-                    <form id="master_fraksi_form" class="tooltip-label-end" method="POST" novalidate enctype="multipart/form-data">
+                    <form id="tahun_periode_form" class="tooltip-label-end" method="POST" novalidate enctype="multipart/form-data">
                         @csrf
-                        <div class="row">
-                            <div class="col-11 mb-3">
-                                <label class="form-label">Nama</label>
-                                <input name="nama" id="nama" type="text" class="form-control" required/>
-                            </div>
-                            <div class="col-1 mb-3">
-                                <label class="form-label">Warna</label>
-                                <input name="color" id="color" type="color" class="form-control form-control-color" required/>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Logo</label>
-                                <input name="logo" id="logo" type="file" class="dropify" data-height="150" data-allowed-file-extensions="png jpg jpeg" data-show-errors="true" required/>
-                            </div>
-                        </div>
+                        <div id="div_form"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
@@ -101,40 +89,6 @@
                     <button type="submit" class="btn btn-primary" name="aksi_button" id="aksi_button">Add</button>
                 </div>
             </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Detail Modal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-11">
-                            <div class="mb-3">
-                                <label class="form-label">Nama</label>
-                                <input id="detail_nama" type="text" class="form-control" disabled/>
-                            </div>
-                        </div>
-                        <div class="col-1">
-                            <label class="form-label">Warna</label>
-                            <input id="detail_color" type="color" class="form-control form-control-color" disabled/>
-                        </div>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label">Logo</label>
-                                <img src="" alt="" class="img-fluid" id="detail_logo">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Oke</button>
-                </div>
             </div>
         </div>
     </div>
@@ -161,29 +115,28 @@
         $(document).ready(function(){
             $('.dropify').dropify();
             $('.dropify-wrapper').css('line-height', '3rem');
-            $('#kabupaten_id').select2();
 
-            var dataTables = $('#master_fraksi_table').DataTable({
+            var dataTables = $('#tahun_periode_table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('admin.master-fraksi.index') }}",
+                    url: "{{ route('admin.tahun-periode.index') }}",
                 },
                 columns:[
                     {
                         data: 'DT_RowIndex'
                     },
                     {
-                        data: 'nama',
-                        name: 'nama'
+                        data: 'tahun_periode',
+                        name: 'tahun_periode'
                     },
                     {
-                        data: 'logo',
-                        name: 'logo'
+                        data: 'status',
+                        name: 'status'
                     },
                     {
-                        data: 'color',
-                        name: 'color'
+                        data: 'status_hubungan',
+                        name: 'status_hubungan'
                     },
                     {
                         data: 'aksi',
@@ -193,24 +146,55 @@
                 ]
             });
         });
-        $(document).on('click', '.detail', function(){
-            var id = $(this).attr('id');
-            $.ajax({
-                url: "{{ url('/admin/master-fraksi/detail') }}"+'/'+id,
-                dataType: "json",
-                success: function(data)
-                {
-                    $('#detail-title').text('Detail Data');
-                    $('#detail_nama').val(data.result.nama);
-                    $('#detail_color').val(data.result.color);
-                    $('#detail_logo').attr('src', "{{ asset('images/logo-fraksi') }}" + '/' + data.result.logo);
-                    $('#detailModal').modal('show');
-                }
-            });
-        });
+
         $('#create').click(function(){
-            $('#master_fraksi_form')[0].reset();
-            $('.dropify-clear').click();
+            $('#form_status').remove();
+            $('#tahun_periode_form')[0].reset();
+            $('#form_jangka_waktu').remove();
+            var jangka_waktu = $(`<div id="form_jangka_waktu">
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative mb-3">
+                                    <label for="tahun_awal" class="form-label">Tahun Awal</label>
+                                    <select name="tahun_awal" id="tahun_awal" class="form-control" required>
+                                        <option value="">--- Pilih Tahun Awal ---</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group position-relative mb-3">
+                                    <label for="tahun_akhir" class="form-label">Tahun Akhir</label>
+                                    <select name="tahun_akhir" id="tahun_akhir" class="form-control" required>
+                                        <option value="">--- Pilih Tahun Akhir ---</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`);
+            $('#div_form').after(jangka_waktu);
+            $("[name='tahun_awal']").val('').trigger('change');
+            $("[name='tahun_akhir']").val('').trigger('change');
+            var year = (new Date()).getFullYear();
+            var current = year;
+            year += -10;
+            for(var i = 0; i < 20; i++)
+            {
+                if((year+i) == current)
+                {
+                    $('#tahun_awal').append('<option value="' + (year + i) +'" selected>' + (year + i) +'</option>');
+                    $('#tahun_akhir').append('<option value="' + (year + i) +'" selected>' + (year + i) +'</option>');
+                } else {
+                    $('#tahun_awal').append('<option value="' + (year + i) +'">' + (year + i) +'</option>');
+                    $('#tahun_akhir').append('<option value="' + (year + i) +'">' + (year + i) +'</option>');
+                }
+            }
+            $('#tahun_awal').select2({
+                dropdownParent: $("#addEditModal")
+            });
+
+            $('#tahun_akhir').select2({
+                dropdownParent: $("#addEditModal")
+            });
             $('#aksi_button').text('Save');
             $('#aksi_button').prop('disabled', false);
             $('.modal-title').text('Add Data');
@@ -218,18 +202,16 @@
             $('#aksi').val('Save');
             $('#form_result').html('');
         });
-        $('#master_fraksi_form').on('submit', function(e){
+
+        $('#tahun_periode_form').on('submit', function(e){
             e.preventDefault();
             if($('#aksi').val() == 'Save')
             {
                 $.ajax({
-                    url: "{{ route('admin.master-fraksi.store') }}",
+                    url: "{{ route('admin.tahun-periode.store') }}",
                     method: "POST",
-                    data: new FormData(this),
+                    data: $(this).serialize(),
                     dataType: "json",
-                    contentType: false,
-                    cache: false,
-                    processData: false,
                     beforeSend: function()
                     {
                         $('#aksi_button').text('Menyimpan...');
@@ -242,18 +224,21 @@
                         {
                             html = '<div class="alert alert-danger">'+data.errors+'</div>';
                             $('#aksi_button').prop('disabled', false);
-                            $('.dropify-clear').click();
+                            $('#tahun_periode_form')[0].reset();
+                            $("[name='tahun_awal']").val('').trigger('change');
+                            $("[name='tahun_akhir']").val('').trigger('change');
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#tahun_periode_table').DataTable().ajax.reload();
                         }
                         if(data.success)
                         {
                             html = '<div class="alert alert-success">'+data.success+'</div>';
                             $('#aksi_button').prop('disabled', false);
-                            $('#master_fraksi_form')[0].reset();
-                            $('.dropify-clear').click();
+                            $('#tahun_periode_form')[0].reset();
+                            $("[name='tahun_awal']").val('').trigger('change');
+                            $("[name='tahun_akhir']").val('').trigger('change');
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#tahun_periode_table').DataTable().ajax.reload();
                         }
 
                         $('#form_result').html(html);
@@ -263,13 +248,10 @@
             if($('#aksi').val() == 'Edit')
             {
                 $.ajax({
-                    url: "{{ route('admin.master-fraksi.update') }}",
+                    url: "{{ route('admin.tahun-periode.update') }}",
                     method: "POST",
-                    data: new FormData(this),
+                    data: $(this).serialize(),
                     dataType: "json",
-                    contentType: false,
-                    cache: false,
-                    processData: false,
                     beforeSend: function(){
                         $('#aksi_button').text('Mengubah...');
                         $('#aksi_button').prop('disabled', true);
@@ -285,10 +267,10 @@
                         if(data.success)
                         {
                             // html = '<div class="alert alert-success">'+ data.success +'</div>';
-                            $('#master_fraksi_form')[0].reset();
+                            $('#tahun_periode_form')[0].reset();
                             $('#aksi_button').prop('disabled', false);
                             $('#aksi_button').text('Save');
-                            $('#master_fraksi_table').DataTable().ajax.reload();
+                            $('#tahun_periode_table').DataTable().ajax.reload();
                             $('#addEditModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
@@ -302,25 +284,31 @@
                 });
             }
         });
+
         $(document).on('click', '.edit', function(){
             var id = $(this).attr('id');
+            var url = "{{ route('admin.tahun-periode.edit', ['id' => ":id"]) }}";
+            url = url.replace(":id", id);
             $('#form_result').html('');
             $.ajax({
-                url: "{{ url('/admin/master-fraksi/edit') }}"+'/'+id,
+                url: url,
                 dataType: "json",
                 success: function(data)
                 {
-                    $('#nama').val(data.result.nama);
-                    $('#color').val(data.result.color);
-                    var lokasi_logo = "{{ asset('images/logo-fraksi') }}"+'/'+data.result.logo;
-                    var fileDropperLogo = $("#logo").dropify();
-
-                    fileDropperLogo = fileDropperLogo.data('dropify');
-                    fileDropperLogo.resetPreview();
-                    fileDropperLogo.clearElement();
-                    fileDropperLogo.settings['defaultFile'] = lokasi_logo;
-                    fileDropperLogo.destroy();
-                    fileDropperLogo.init();
+                    $('#form_jangka_waktu').remove();
+                    $('#form_status').remove();
+                    var status = $('<div class="mb-3" id="form_status">'+
+                    '<label for="" class="form-label">Status</label>'+
+                    '<select name="status" id="status" class="form-control" required>'+
+                    '<option value="">--- Pilih Status ---</option>'+
+                    '<option value="Aktif">Aktif</option>'+
+                    '<option value="Tidak Aktif">Tidak Aktif</option>'+
+                    '</select>'+
+                    '</div>');
+                    $('#div_form').after(status);
+                    $("[name='tahun_awal']").val('').trigger('change');
+                    $("[name='tahun_akhir']").val('').trigger('change');
+                    $("[name='status']").val(data.result.status).trigger('change');
                     $('#hidden_id').val(id);
                     $('.modal-title').text('Edit Data');
                     $('#aksi_button').text('Edit');
@@ -334,6 +322,8 @@
 
         $(document).on('click', '.delete',function(){
             var id = $(this).attr('id');
+            var url = "{{ route('admin.tahun-periode.destroy', ['id' => ":id"]) }}";
+            url = url.replace(":id", id);
             return new swal({
                 title: "Apakah Anda Yakin Menghapus Ini? Menghapus data ini akan menghapus data yang lain!!!",
                 icon: "warning",
@@ -344,7 +334,7 @@
                 if(result.value)
                 {
                     $.ajax({
-                        url: "{{ url('/admin/master-fraksi/destroy') }}" + '/' + id,
+                        url: url,
                         dataType: "json",
                         beforeSend: function()
                         {
@@ -361,14 +351,14 @@
                             if(data.errors)
                             {
                                 Swal.fire({
-                                    icon: 'errors',
+                                    icon: 'error',
                                     title: data.errors,
                                     showConfirmButton: true
                                 });
                             }
                             if(data.success)
                             {
-                                $('#master_fraksi_table').DataTable().ajax.reload();
+                                $('#tahun_periode_table').DataTable().ajax.reload();
                                 Swal.fire({
                                     icon: 'success',
                                     title: data.success,

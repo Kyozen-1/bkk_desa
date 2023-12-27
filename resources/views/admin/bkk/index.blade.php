@@ -24,6 +24,19 @@
         .select2-selection__arrow {
             height: 36px !important;
         }
+        @media (min-width: 374px) {
+            .scrollBarPagination {
+                height:40rem;
+                overflow-y: scroll;
+            }
+        }
+        @media (min-width: 992px) {
+            .scrollBarPagination {
+                margin-left: -40px;
+                height:90rem;
+                overflow-y: scroll;
+            }
+        }
     </style>
 @endsection
 
@@ -143,18 +156,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="form-group position relative mb-3">
-                                <label for="detail_foto_before" class="form-label">Foto Sebelum</label>
-                                <img id="detail_foto_before" class="img-fluid">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="detail_foto_after" class="form-label">Foto Sesudah</label>
-                            <img id="detail_foto_after" class="img-fluid">
-                        </div>
-                    </div>
+                    <h2 class="small-title">Data BKK</h2>
+                    <hr>
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
@@ -166,12 +169,6 @@
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_aspirator" class="form-label">Aspirator</label>
                                 <input type="text" class="form-control" id="detail_aspirator" disabled>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group position-relative mb-3">
-                                <label for="detail_uraian" class="form-label">Uraian</label>
-                                <textarea name="detail_uraian" id="detail_uraian" rows="5" class="form-control" disabled></textarea>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -210,6 +207,12 @@
                                 <input type="text" class="form-control" id="detail_p_apbd" disabled>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="form-group position-relative mb-3">
+                                <label for="detail_uraian" class="form-label">Uraian</label>
+                                <textarea name="detail_uraian" id="detail_uraian" rows="5" class="form-control" disabled></textarea>
+                            </div>
+                        </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_tanggal_realisasi" class="form-label">Tanggal Realisasi</label>
@@ -222,6 +225,11 @@
                                 <input type="text" class="form-control" id="detail_tahun" disabled>
                             </div>
                         </div>
+                    </div>
+                    <hr>
+                    <h2 class="small-title">Lokasi</h2>
+                    <hr>
+                    <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_kecamatan" class="form-label">Kecamatan</label>
@@ -251,6 +259,21 @@
                                 <label for="detail_lat" class="form-label">LAT</label>
                                 <input type="text" class="form-control" id="detail_lat" disabled>
                             </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h2 class="small-title">Dokumentasi</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label for="detail_foto_before" class="form-label">Foto Sebelum</label>
+                            <ul class="scrollBarPagination" style="list-style:none" id="detailFotoSebelum">
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="detail_foto_after" class="form-label">Foto Sesudah</label>
+                            <ul class="scrollBarPagination" style="list-style:none" id="detailFotoSesudah">
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -549,8 +572,39 @@
                     $('#detail_alamat').val(data.result.alamat);
                     $('#detail_lng').val(data.result.lng);
                     $('#detail_lat').val(data.result.lat);
-                    $('#detail_foto_before').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_before);
-                    $('#detail_foto_after').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_after);
+                    // $('#detail_foto_before').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_before);
+                    // $('#detail_foto_after').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_after);
+                    var html = '';
+                    var urlFoto = '';
+                    $.each(data.result.foto_before, function(i, v){
+                        urlFoto = "{{ asset('images/foto-bkk') }}" + '/' + v['nama'];
+                        html += '<hr class="border-top">';
+                        html += '<li>';
+                            html += '<div class="card shadow p-2">';
+                                html += '<div class="form-group position relative mb-3">';
+                                    html += '<img class="img-fluid" src="'+urlFoto+'" style="height:5rem;">';
+                                html += '</div>';
+                            html += '</div>';
+                        html += '</li>';
+                    });
+                    $('#detailFotoSebelum').html(html);
+
+                    if (data.result.foto_after.length != 0) {
+                        html = '';
+                        $.each(data.result.foto_after, function(i, v){
+                            urlFoto = "{{ asset('images/foto-bkk') }}" + '/' + v['nama'];
+                            html += '<hr class="border-top">';
+                            html += '<li>';
+                                html += '<div class="card shadow p-2">';
+                                    html += '<div class="form-group position relative mb-3">';
+                                        html += '<img class="img-fluid" src="'+urlFoto+'" style="height:5rem;">';
+                                    html += '</div>';
+                                html += '</div>';
+                            html += '</li>';
+                        });
+                        $('#detailFotoSesudah').html(html);
+                    }
+
                     $('#detailModal').modal('show');
                 }
             });

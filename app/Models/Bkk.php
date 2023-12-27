@@ -33,4 +33,9 @@ class Bkk extends Model
     {
         return $this->belongsTo('App\Models\MasterKategoriPembangunan', 'master_kategori_pembangunan_id');
     }
+
+    public function pivot_bkk_lampiran()
+    {
+        return $this->hasMany('App\Models\PivotBkkLampiran', 'bkk_id');
+    }
 }

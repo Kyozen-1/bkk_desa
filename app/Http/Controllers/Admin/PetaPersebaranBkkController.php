@@ -26,7 +26,7 @@ class PetaPersebaranBkkController extends Controller
     public function get_data()
     {
         $datas = [];
-        $bkks = Bkk::all();
+        $bkks = Bkk::whereHas('aspirator')->get();
         $fotoBkk = '';
         foreach ($bkks as $bkk) {
             if($bkk->foto_after)
@@ -38,9 +38,10 @@ class PetaPersebaranBkkController extends Controller
             $datas[] = [
                 'id' => $bkk->id,
                 'uraian' => $bkk->uraian,
-                'aspirator' => $bkk->aspirator->nama,
-                'partai' => $bkk->aspirator->master_fraksi->nama,
-                'logo_partai' => $bkk->aspirator->master_fraksi->logo,
+                'aspirator' => $bkk->aspirator?$bkk->aspirator->nama : '',
+                'partai' => $bkk->aspirator?$bkk->aspirator->master_fraksi->nama : '',
+                'logo_partai' => $bkk->aspirator? $bkk->aspirator->master_fraksi->logo : '',
+                'color' => $bkk->aspirator? $bkk->aspirator->master_fraksi->color : '',
                 'tahun' => $bkk->tahun,
                 'lat' => (float) $bkk->lat,
                 'lng' => (float) $bkk->lng,
@@ -83,7 +84,9 @@ class PetaPersebaranBkkController extends Controller
             $bkks = $bkks->where('master_kategori_pembangunan_id', $request->filter_master_kategori_pembangunan_id);
         }
 
-        $bkks = $bkks->get();
+        $bkks = $bkks->whereHas('aspirator')->get();
+
+
         $fotoBkk = '';
         foreach ($bkks as $bkk) {
             if($bkk->foto_after)
@@ -98,13 +101,18 @@ class PetaPersebaranBkkController extends Controller
                 'aspirator' => $bkk->aspirator->nama,
                 'partai' => $bkk->aspirator->master_fraksi->nama,
                 'logo_partai' => $bkk->aspirator->master_fraksi->logo,
+                'color' => $bkk->aspirator->master_fraksi->color,
                 'tahun' => $bkk->tahun,
                 'lat' => (float) $bkk->lat,
                 'lng' => (float) $bkk->lng,
                 'foto' => $fotoBkk
             ];
         }
-
-        return $datas;
+        if(count($datas) != 0)
+        {
+            return response()->json(['success' => 'berhasil mendapatkan data', 'datas' => $datas]);
+        } else {
+            return response()->json(['error' => 'tidak ada data']);
+        }
     }
 }

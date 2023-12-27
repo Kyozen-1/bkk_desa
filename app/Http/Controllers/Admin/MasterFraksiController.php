@@ -41,7 +41,10 @@ class MasterFraksiController extends Controller
                 ->editColumn('logo', function($data){
                     return '<img src="'.asset('images/logo-fraksi/'.$data->logo).'" style="width:5rem;">';
                 })
-                ->rawColumns(['aksi', 'logo'])
+                ->editColumn('color', function($data){
+                    return '<input type="color" class="form-control form-control-color" value="'.$data->color.'" disabled>';
+                })
+                ->rawColumns(['aksi', 'logo', 'color'])
                 ->make(true);
         }
         return view('admin.master-fraksi.index');
@@ -67,6 +70,7 @@ class MasterFraksiController extends Controller
     {
         $errors = Validator::make($request->all(), [
             'nama' => 'required',
+            'color' => 'required',
             'logo' => 'mimes:jpeg,jpg,png,gif|required',
         ]);
 
@@ -83,6 +87,7 @@ class MasterFraksiController extends Controller
 
         $fraksi = new MasterFraksi;
         $fraksi->nama = $request->nama;
+        $fraksi->color = $request->color;
         $fraksi->logo = $logoName;
         $fraksi->save();
 
@@ -131,6 +136,7 @@ class MasterFraksiController extends Controller
     {
         $errors = Validator::make($request->all(), [
             'nama' => 'required',
+            'color' => 'required'
         ]);
 
         if($errors -> fails())
@@ -140,6 +146,7 @@ class MasterFraksiController extends Controller
 
         $fraksi = MasterFraksi::find($request->hidden_id);
         $fraksi->nama = $request->nama;
+        $fraksi->color = $request->color;
         if($request->logo)
         {
             $logoName = $fraksi->logo;

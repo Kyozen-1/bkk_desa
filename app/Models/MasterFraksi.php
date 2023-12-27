@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class MasterFraksi extends Model
 {
     protected $table = 'master_fraksis';
-    protected $fillable = ['nama'];
     protected $guarded = 'id';
 
     public function aspirator()

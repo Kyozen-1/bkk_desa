@@ -25,19 +25,6 @@
             height: 36px !important;
         }
         #map { height: 35rem; }
-        @media (min-width: 374px) {
-            .scrollBarPagination {
-                height:40rem;
-                overflow-y: scroll;
-            }
-        }
-        @media (min-width: 992px) {
-            .scrollBarPagination {
-                margin-left: -40px;
-                height:90rem;
-                overflow-y: scroll;
-            }
-        }
     </style>
 @endsection
 
@@ -99,7 +86,7 @@
                         </select>
                     </div>
                     <div class="col-12 col-md-2" style="text-align: center">
-                        <button class="btn btn-success btn-icon waves-effect waves-light" id="btn_filter" type="button"><i class="fas fa-filter"></i></button>
+                        <button class="btn btn-success btn-icon waves-effect waves-light" id="btn_filter"><i class="fas fa-filter"></i></button>
                     </div>
                 </div>
                 <div id="map"></div>
@@ -115,8 +102,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h2 class="small-title">Data BKK</h2>
-                    <hr>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group position relative mb-3">
+                                <label for="detail_foto_before" class="form-label">Foto Sebelum</label>
+                                <img id="detail_foto_before" class="img-fluid">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="detail_foto_after" class="form-label">Foto Sesudah</label>
+                            <img id="detail_foto_after" class="img-fluid">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
@@ -128,6 +125,12 @@
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_aspirator" class="form-label">Aspirator</label>
                                 <input type="text" class="form-control" id="detail_aspirator" disabled>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group position-relative mb-3">
+                                <label for="detail_uraian" class="form-label">Uraian</label>
+                                <textarea name="detail_uraian" id="detail_uraian" rows="5" class="form-control" disabled></textarea>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -166,12 +169,6 @@
                                 <input type="text" class="form-control" id="detail_p_apbd" disabled>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="form-group position-relative mb-3">
-                                <label for="detail_uraian" class="form-label">Uraian</label>
-                                <textarea name="detail_uraian" id="detail_uraian" rows="5" class="form-control" disabled></textarea>
-                            </div>
-                        </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_tanggal_realisasi" class="form-label">Tanggal Realisasi</label>
@@ -184,10 +181,6 @@
                                 <input type="text" class="form-control" id="detail_tahun" disabled>
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <h2 class="small-title">Lokasi</h2>
-                    <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group position-relative mb-3">
                                 <label for="detail_kecamatan" class="form-label">Kecamatan</label>
@@ -219,21 +212,6 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <h2 class="small-title">Dokumentasi</h2>
-                    <hr>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <label for="detail_foto_before" class="form-label">Foto Sebelum</label>
-                            <ul class="scrollBarPagination" style="list-style:none" id="detailFotoSebelum">
-                            </ul>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="detail_foto_after" class="form-label">Foto Sesudah</label>
-                            <ul class="scrollBarPagination" style="list-style:none" id="detailFotoSesudah">
-                            </ul>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Oke</button>
@@ -262,7 +240,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js" integrity="sha512-j3gF1rYV2kvAKJ0Jo5CdgLgSYS7QYmBVVUjduXdoeBkc4NFV4aSRTi+Rodkiy9ht7ZYEwF+s09S43Z1Y+ujUkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const map = L.map('map').setView([-7.616648802470493,111.65000137302656], 13);
-        var markers = new L.FeatureGroup();
         var popup = L.popup();
                 googleStreets = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',{
                     maxZoom: 20,
@@ -279,35 +256,30 @@
             $('#filter_master_kategori_pembangunan_id').select2();
             $.getJSON("{{ route('admin.peta-persebaran-bkk.get-data') }}", function(data){
                 $.each(data, function(index){
-                    marker = L.circleMarker([data[index].lat,data[index].lng],{
-                        radius: 5,
-                        weight: 2,
-                        opacity: 0,
-                        fillOpacity: 1,
-                        color: data[index].color
-                    }).addTo(markers).on('click', function(e){
-                        urlGambar = "{{asset('images/logo-fraksi')}}" + '/' + data[index].logo_partai;
-                        konten_html = '<div>';
-                            konten_html += '<div style="text-align:left">';
+                        marker = L.marker([data[index].lat,data[index].lng],{icon:L.icon({
+                            iconUrl: "{{asset('images/logo-fraksi')}}" + '/' + data[index].logo_partai,
+
+                            iconSize:     [30, 35], // size of the icon
+                            shadowSize:   [50, 64], // size of the shadow
+                            // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                            shadowAnchor: [4, 62],  // the same for the shadow
+                            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                        })}).addTo(map).on('click', function(e){
+                            urlGambar = "{{ asset('images/foto-bkk') }}" + '/' + data[index].foto;
+                            konten_html = '<div>';
                                 konten_html += '<p>Uraian: '+data[index].uraian+'</p>';
                                 konten_html += '<p>Tahun: '+data[index].tahun+'</p>';
+                                konten_html += '<img src="'+urlGambar+'" class="img-fluid">';
+                                konten_html += '<hr>';
+                                konten_html += '<button type="button" name="detail" id="'+data[index].id+'" class="detail btn btn-icon waves-effect btn-success" title="Detail Data"><i class="fas fa-eye"></i></button>';
                             konten_html += '</div>';
-                            konten_html += '<br>';
-                            konten_html += '<div style="text-align:center">';
-                                konten_html += '<img src="'+urlGambar+'" style="height: 5rem;">';
-                            konten_html += '</div>';
-                            konten_html += '<hr>';
-                            konten_html += '<button type="button" name="detail" id="'+data[index].id+'" class="detail btn btn-icon waves-effect btn-success" title="Detail Data"><i class="fas fa-eye"></i></button>';
-                        konten_html += '</div>';
-                        popup
-                            .setLatLng(e.latlng)
-                            .setContent(konten_html)
-                            .openOn(map);
+                            popup
+                                .setLatLng(e.latlng)
+                                .setContent(konten_html)
+                                .openOn(map);
+                        });
                     });
-                });
             });
-
-            map.addLayer(markers);
         });
 
         $(document).on('click', '.detail', function(){
@@ -333,38 +305,8 @@
                     $('#detail_alamat').val(data.result.alamat);
                     $('#detail_lng').val(data.result.lng);
                     $('#detail_lat').val(data.result.lat);
-                    // $('#detail_foto_before').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_before);
-                    // $('#detail_foto_after').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_after);
-                    var html = '';
-                    var urlFoto = '';
-                    $.each(data.result.foto_before, function(i, v){
-                        urlFoto = "{{ asset('images/foto-bkk') }}" + '/' + v['nama'];
-                        html += '<hr class="border-top">';
-                        html += '<li>';
-                            html += '<div class="card shadow p-2">';
-                                html += '<div class="form-group position relative mb-3">';
-                                    html += '<img class="img-fluid" src="'+urlFoto+'" style="height:5rem;">';
-                                html += '</div>';
-                            html += '</div>';
-                        html += '</li>';
-                    });
-                    $('#detailFotoSebelum').html(html);
-
-                    if (data.result.foto_after.length != 0) {
-                        html = '';
-                        $.each(data.result.foto_after, function(i, v){
-                            urlFoto = "{{ asset('images/foto-bkk') }}" + '/' + v['nama'];
-                            html += '<hr class="border-top">';
-                            html += '<li>';
-                                html += '<div class="card shadow p-2">';
-                                    html += '<div class="form-group position relative mb-3">';
-                                        html += '<img class="img-fluid" src="'+urlFoto+'" style="height:5rem;">';
-                                    html += '</div>';
-                                html += '</div>';
-                            html += '</li>';
-                        });
-                        $('#detailFotoSesudah').html(html);
-                    }
+                    $('#detail_foto_before').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_before);
+                    $('#detail_foto_after').attr('src', "{{ asset('images/foto-bkk') }}" + '/' + data.result.foto_after);
                     $('#detailModal').modal('show');
                 }
             });
@@ -407,7 +349,7 @@
         });
 
         $('#btn_filter').click(function(){
-            map.removeLayer(markers);
+            map.removeLayer(marker);
             var filter_fraksi_id = $('#filter_fraksi_id').val();
             var filter_aspirator_id = $('#filter_aspirator_id').val();
             var filter_master_jenis_id = $('#filter_master_jenis_id').val();
@@ -426,51 +368,30 @@
                     },
                 success: function(data)
                 {
-                    if(data.error)
-                    {
-                        Swal.fire({
-                            icon: 'error',
-                            title: data.error,
-                            showConfirmButton: true
-                        });
-                    }
+                    $.each(data, function(index){
+                        marker = L.marker([data[index].lat,data[index].lng],{icon:L.icon({
+                            iconUrl: "{{asset('images/logo-fraksi')}}" + '/' + data[index].logo_partai,
 
-                    if(data.success)
-                    {
-                        Swal.fire({
-                            icon: 'success',
-                            title: data.success,
-                            showConfirmButton: true
+                            iconSize:     [30, 35], // size of the icon
+                            shadowSize:   [50, 64], // size of the shadow
+                            // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                            shadowAnchor: [4, 62],  // the same for the shadow
+                            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                        })}).addTo(map).on('click', function(e){
+                            urlGambar = "{{ asset('images/foto-bkk') }}" + '/' + data[index].foto;
+                            konten_html = '<div>';
+                                konten_html += '<p>Uraian: '+data[index].uraian+'</p>';
+                                konten_html += '<p>Tahun: '+data[index].tahun+'</p>';
+                                konten_html += '<img src="'+urlGambar+'" class="img-fluid">';
+                                konten_html += '<hr>';
+                                konten_html += '<button type="button" name="detail" id="'+data[index].id+'" class="detail btn btn-icon waves-effect btn-success" title="Detail Data"><i class="fas fa-eye"></i></button>';
+                            konten_html += '</div>';
+                            popup
+                                .setLatLng(e.latlng)
+                                .setContent(konten_html)
+                                .openOn(map);
                         });
-                        $.each(data.datas, function(index){
-                            marker = L.circleMarker([data.datas[index].lat,data.datas[index].lng],{
-                                radius: 5,
-                                weight: 2,
-                                opacity: 0,
-                                fillOpacity: 1,
-                                color: data.datas[index].color
-                            }).addTo(markers).on('click', function(e){
-                                urlGambar = "{{asset('images/logo-fraksi')}}" + '/' + data.datas[index].logo_partai;
-                                konten_html = '<div>';
-                                    konten_html += '<div style="text-align:left">';
-                                        konten_html += '<p>Uraian: '+data.datas[index].uraian+'</p>';
-                                        konten_html += '<p>Tahun: '+data.datas[index].tahun+'</p>';
-                                    konten_html += '</div>';
-                                    konten_html += '<br>';
-                                    konten_html += '<div style="text-align:center">';
-                                        konten_html += '<img src="'+urlGambar+'" style="height: 5rem;">';
-                                    konten_html += '</div>';
-                                    konten_html += '<hr>';
-                                    konten_html += '<button type="button" name="detail" id="'+data.datas[index].id+'" class="detail btn btn-icon waves-effect btn-success" title="Detail Data"><i class="fas fa-eye"></i></button>';
-                                konten_html += '</div>';
-                                popup
-                                    .setLatLng(e.latlng)
-                                    .setContent(konten_html)
-                                    .openOn(map);
-                            });
-                        });
-                        map.addLayer(markers);
-                    }
+                    });
                 }
             });
         });

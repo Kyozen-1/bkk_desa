@@ -5,6 +5,11 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::post('/admin/dashboard/change', 'Admin\DashboardController@change')->name('admin.dashboard.change');
     Route::prefix('admin')->group(function(){
         Route::prefix('dashboard')->group(function(){
+            Route::prefix('table')->group(function(){
+                Route::get('/{tahun}', 'Admin\DashboardController@table')->name('admin.dashboard.table');
+                Route::get('/detail/{id}', 'Admin\DashboardController@detail')->name('admin.dashboard.detail');
+            });
+
             Route::prefix('grafik')->group(function(){
                 Route::get('/grafik-bkk-desa-perbulan', 'Admin\DashboardController@grafik_bkk_desa_perbulan')->name('admin.dashboard.grafik-bkk-desa-perbulan');
                 Route::get('/grafik-bkk-desa-perpartai', 'Admin\DashboardController@grafik_bkk_desa_perpartai')->name('admin.dashboard.grafik-bkk-desa-perpartai');
@@ -70,10 +75,17 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::post('/admin/bkk/get-kelurahan', 'Admin\BkkController@get_kelurahan')->name('admin.bkk.get-kelurahan');
     Route::post('/admin/bkk/store', 'Admin\BkkController@store')->name('admin.bkk.store');
     Route::get('/admin/bkk/detail/{id}', 'Admin\BkkController@detail');
-    Route::get('/admin/bkk/edit/{id}', 'Admin\BkkController@edit');
+    Route::get('/admin/bkk/edit/{id}', 'Admin\BkkController@edit')->name('admin.bkk.edit');
     Route::post('/admin/bkk/update', 'Admin\BkkController@update')->name('admin.bkk.update');
-    Route::get('/admin/bkk/destroy/{id}', 'Admin\BkkController@destroy');
+    Route::post('/admin/bkk/destroy', 'Admin\BkkController@destroy')->name('admin.bkk.destroy');
     Route::post('/admin/bkk/impor', 'Admin\BkkController@impor')->name('admin.bkk.impor');
+    Route::prefix('admin')->group(function(){
+        Route::prefix('bkk')->group(function(){
+            Route::post('/delete-bkk-lampiran', 'Admin\BkkController@delete_bkk_lampiran')->name('admin.bkk.delete-bkk-lampiran');
+            Route::post('/tambah-bkk-foto-before/{id}', 'Admin\BkkController@tambah_bkk_foto_before')->name('admin.bkk.tambah-bkk-foto-before');
+            Route::post('/tambah-bkk-foto-after/{id}', 'Admin\BkkController@tambah_bkk_foto_after')->name('admin.bkk.tambah-bkk-foto-after');
+        });
+    });
 
     //Master Tipe Kegiatan
     Route::get('/admin/master-tipe-kegiatan', 'Admin\MasterTipeKegiatanController@index')->name('admin.master-tipe-kegiatan.index');
@@ -102,6 +114,19 @@ Route::group(['middleware' => 'auth:admin'], function(){
                 Route::post('/change-password','Admin\ManajemenAkun\FasilitatorController@change_password')->name('admin.manajemen-akun.fasilitator.change-password');
                 Route::post('/destroy','Admin\ManajemenAkun\FasilitatorController@destroy')->name('admin.manajemen-akun.fasilitator.destroy');
             });
+        });
+
+        Route::prefix('tahun-periode')->group(function(){
+            Route::get('/', 'Admin\TahunPeriodeController@index')->name('admin.tahun-periode.index');
+            Route::post('/','Admin\TahunPeriodeController@store')->name('admin.tahun-periode.store');
+            Route::get('/edit/{id}','Admin\TahunPeriodeController@edit')->name('admin.tahun-periode.edit');
+            Route::post('/update','Admin\TahunPeriodeController@update')->name('admin.tahun-periode.update');
+            Route::get('/destroy/{id}','Admin\TahunPeriodeController@destroy')->name('admin.tahun-periode.destroy');
+
+        });
+
+        Route::prefix('normalisasi')->group(function(){
+            Route::get('/foto-bkk', 'Admin\NormalisasiController@fotoBkk');
         });
     });
 });

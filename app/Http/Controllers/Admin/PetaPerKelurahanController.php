@@ -80,6 +80,14 @@ class PetaPerKelurahanController extends Controller
             } else {
                 $fotoBkk = $bkk->foto_before;
             }
+            if($bkk->aspirator)
+            {
+                $namaAspirator = $bkk->aspirator->nama;
+                $namaFraksi = $bkk->aspirator->master_fraksi->nama;
+            } else {
+                $namaAspirator = '';
+                $namaFraksi = '';
+            }
             $html .= '<li>
                         <div class="card">
                             <div class="card-body">
@@ -90,8 +98,8 @@ class PetaPerKelurahanController extends Controller
                                     <div class="col-6 col-md-8">
                                         <p>Uraian: '.$bkk->uraian.'</p>
                                         <p>Alamat: '.$bkk->alamat.'</p>
-                                        <p>Aspirator:  '.$bkk->aspirator->nama.'</p>
-                                        <p>Partai: '.$bkk->aspirator->master_fraksi->nama.'</p>
+                                        <p>Aspirator:  '.$namaAspirator.'</p>
+                                        <p>Partai: '.$namaFraksi.'</p>
                                         <p>Tahun: '.$bkk->tahun.'</p>
                                     </div>
                                 </div>

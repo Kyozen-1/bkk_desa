@@ -200,14 +200,14 @@
             <li>
                 @if (request()->routeIs('admin.peta-persebaran-bkk.index') ||
                 request()->routeIs('admin.peta-per-kelurahan.index'))
-                    <a href="#master_data" class="active">
+                    <a href="#peta_persebaran" class="active">
                 @else
-                    <a href="#master_data">
+                    <a href="#peta_persebaran">
                 @endif
                     <i data-acorn-icon="align-justify" class="icon" data-acorn-size="18"></i>
                     <span class="label">Peta</span>
                 </a>
-                <ul id="master_data">
+                <ul id="peta_persebaran">
                     <li>
                         @if (request()->routeIs('admin.peta-persebaran-bkk.index'))
                             <a href="{{ route('admin.peta-persebaran-bkk.index') }}" class="active">
@@ -246,7 +246,8 @@
                 request()->routeIs('admin.master-jenis.index') ||
                 request()->routeIs('admin.aspirator.index') ||
                 request()->routeIs('admin.master-tipe-kegiatan.index') ||
-                request()->routeIs('admin.master-kategori-pembangunan.index'))
+                request()->routeIs('admin.master-kategori-pembangunan.index') ||
+                request()->routeIs('admin.tahun-periode.index'))
                     <a href="#master_data" class="active">
                 @else
                     <a href="#master_data">
@@ -316,6 +317,15 @@
                             <a href="{{ route('admin.master-kategori-pembangunan.index') }}">
                         @endif
                             <span class="label">Master Kategori Pembangunan</span>
+                        </a>
+                    </li>
+                    <li>
+                        @if (request()->routeIs('admin.tahun-periode.index'))
+                            <a href="{{ route('admin.tahun-periode.index') }}" class="active">
+                        @else
+                            <a href="{{ route('admin.tahun-periode.index') }}">
+                        @endif
+                            <span class="label">Tahun Periode</span>
                         </a>
                     </li>
                 </ul>
