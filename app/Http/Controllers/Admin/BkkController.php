@@ -365,6 +365,9 @@ class BkkController extends Controller
                 $pivot->status = 'after';
                 $pivot->save();
             }
+
+            $bkk->status_konfirmasi = 'ya';
+            $bkk->save();
         }
 
         Alert::success('Berhasil', 'Berhasil Menambahkan Data BKK');

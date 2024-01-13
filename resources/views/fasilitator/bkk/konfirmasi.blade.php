@@ -84,8 +84,9 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="position-relative form-group mb-3">
-                                        <label for="foto_after" class="control-label">Foto After</label>
-                                        <input type="file" class="dropify" id="foto_after" name="foto_after" data-height="150" data-allowed-file-extensions="png jpg jpeg" data-show-errors="true">
+                                        <label for="foto_after" class="control-label">Foto Sesudah</label>
+                                        <input type="file" class="dropify" id="foto_after" name="foto_after[]" data-height="150" data-allowed-file-extensions="png jpg jpeg" data-show-errors="true" multiple>
+                                        <span class="text-danger small-title">*Isi jika sudah *silahkan masukkan 2 - 5 gambar</span>
                                     </div>
                                 </div>
                             </div>

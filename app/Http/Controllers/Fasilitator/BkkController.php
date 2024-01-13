@@ -22,6 +22,7 @@ use App\Models\Kelurahan;
 use App\Models\Kecamatan;
 use App\Models\MasterTipeKegiatan;
 use App\Models\MasterKategoriPembangunan;
+use App\Models\PivotBkkLampiran;
 
 class BkkController extends Controller
 {
@@ -82,20 +83,25 @@ class BkkController extends Controller
                     return $data->kelurahan->nama;
                 })
                 ->editColumn('tipe_kegiatan_id', function($data){
-                    return $data->master_tipe_kegiatan->nama;
+                    return $data->master_tipe_kegiatan ? $data->master_tipe_kegiatan->nama : '';
                 })
                 ->editColumn('apbd', function($data){
-                    return 'Rp. '.number_format($data->apbd, 2, ',', '.');
+                    return 'Rp. '.number_format((int)$data->apbd, 2, ',', '.');
                 })
                 ->addColumn('master_fraksi', function($data){
-                    return $data->aspirator->master_fraksi->nama;
+                    return $data->aspirator ? $data->aspirator->master_fraksi->nama : '';
                 })
                 ->addColumn('foto', function($data){
-                    if($data->foto_after)
+                    $cekFotoAfter = $data->pivot_bkk_lampiran->where('status', 'after')->first();
+                    if($cekFotoAfter)
                     {
-                        return '<img src="'.asset('images/foto-bkk/'.$data->foto_after).'" style="width:5rem;" title="Foto Setelah">';
+                        return '<img src="'.asset('images/foto-bkk/'.$cekFotoAfter->nama).'" style="width:5rem;" title="Foto Setelah">';
                     } else {
-                        return '<img src="'.asset('images/foto-bkk/'.$data->foto_before).'" style="width:5rem;" title="Foto Sebelum">';
+                        $cekFotoBefore = $data->pivot_bkk_lampiran->where('status', 'before')->first();
+                        if($cekFotoBefore)
+                        {
+                            return '<img src="'.asset('images/foto-bkk/'.$cekFotoBefore->nama).'" style="width:5rem;" title="Foto Sebelum">';
+                        }
                     }
                 })
                 ->editColumn('status_konfirmasi', function($data){
@@ -140,13 +146,13 @@ class BkkController extends Controller
         $data = Bkk::find($id);
 
         $array = [
-            'master_fraksi' => $data->aspirator->master_fraksi->nama,
+            'master_fraksi' => $data->aspirator_id ? $data->aspirator->master_fraksi->nama : '',
             'aspirator' => $data->aspirator->nama,
             'uraian' => $data->uraian,
             'master_jenis' => $data->master_jenis->nama,
             'tipe_kegiatan' => $data->master_tipe_kegiatan->nama,
-            'apbd' => 'Rp. '.number_format($data->apbd, 2),
-            'p_apbd' => 'Rp. '.number_format($data->p_apbd, 2),
+            'apbd' => $data->p_apbd,
+            'p_apbd' => $data->p_apbd,
             'tanggal_realisasi' => Carbon::parse($data->tanggal_realisasi)->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('l, j F Y'),
             'tahun' => $data->tahun,
             'kecamatan' => $data->kelurahan->kecamatan->nama,
@@ -154,10 +160,26 @@ class BkkController extends Controller
             'alamat' => $data->alamat,
             'lng' => $data->lng,
             'lat' => $data->lat,
-            'foto_before' => $data->foto_before,
-            'foto_after' => $data->foto_after,
+            // 'foto_before' => $data->foto_before,
+            // 'foto_after' => $data->foto_after,
             'kategori_pembangunan' => $data->master_kategori_pembangunan_id?$data->master_kategori_pembangunan->nama :'',
-            'jumlah' => $data->jumlah
+            'jumlah' => $data->jumlah,
+            'foto_before' => $data->pivot_bkk_lampiran
+                            ->where('status', 'before')
+                            ->map(function($d){
+                                return [
+                                    'id' => $d->id,
+                                    'nama' => $d->nama
+                                ];
+                            }),
+            'foto_after' => $data->pivot_bkk_lampiran
+                            ->where('status', 'after')
+                            ->map(function($d){
+                                return [
+                                    'id' => $d->id,
+                                    'nama' => $d->nama
+                                ];
+                            }),
         ];
 
         return response()->json(['result' => $array]);
@@ -188,7 +210,7 @@ class BkkController extends Controller
     {
         $errors = Validator::make($request->all(), [
             'bkk_id' => 'required',
-            'foto_after' => 'mimes:jpeg,jpg,png,gif|required'
+            'foto_after.*' => 'mimes:jpeg,jpg,png,gif',
         ]);
 
         if($errors -> fails())
@@ -196,18 +218,89 @@ class BkkController extends Controller
             return redirect()->back()->with('Gagal Menyimpan', $errors->errors()->all());
         }
 
-        $fotoAfterExtension = $request->foto_after->extension();
-        $fotoAfterName =  uniqid().'-'.date("ymd").'.'.$fotoAfterExtension;
-        $fotoAfter = Image::make($request->foto_after);
-        $fotoAfterSize = public_path('images/foto-bkk/'.$fotoAfterName);
-        $fotoAfter->save($fotoAfterSize, 100);
+        // $fotoAfterExtension = $request->foto_after->extension();
+        // $fotoAfterName =  uniqid().'-'.date("ymd").'.'.$fotoAfterExtension;
+        // $fotoAfter = Image::make($request->foto_after);
+        // $fotoAfterSize = public_path('images/foto-bkk/'.$fotoAfterName);
+        // $fotoAfter->save($fotoAfterSize, 100);
 
         $bkk = Bkk::find($request->bkk_id);
-        $bkk->foto_after = $fotoAfterName;
+        // $bkk->foto_after = $fotoAfterName;
         $bkk->status_konfirmasi = 'ya';
         $bkk->tanggal_konfirmasi = Carbon::now();
         $bkk->konfirmasi_by_fasilitator_id = Auth::user()->fasilitator_id;
         $bkk->save();
+
+        $dataFotoAfter = [];
+        foreach ($request->file('foto_after') as $file) {
+            $fotoAfterExtension = $file->extension();
+            $width = getimagesize($file)[0];
+            $fotoAfterName = uniqid().'-'.date("ymd").'.'.$fotoAfterExtension;
+            $fotoAfter = Image::make($file);
+            if($width <= 750)
+            {
+                $fotoAfter->text('Kec: '.$bkk->kelurahan->kecamatan->nama.', Kel: '.$bkk->kelurahan->nama.', Alamat: '.$request->alamat, 50, 50, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Bold.ttf'));
+                    $font->size(14);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+                $fotoAfter->text(Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('l, j F Y ; h:i a'), 50, 100, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Bold.ttf'));
+                    $font->size(14);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+            }
+            if($width > 750 && $width <= 1500)
+            {
+                $fotoAfter->text('Kec: '.$bkk->kelurahan->kecamatan->nama.', Kel: '.$bkk->kelurahan->nama.', Alamat: '.$request->alamat, 50, 50, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Regular.ttf'));
+                    $font->size(30);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+                $fotoAfter->text(Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('l, j F Y ; h:i a'), 50, 100, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Regular.ttf'));
+                    $font->size(30);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+            }
+            if($width > 1500)
+            {
+                $fotoAfter->text('Kec: '.$bkk->kelurahan->kecamatan->nama.', Kel: '.$bkk->kelurahan->nama.', Alamat: '.$request->alamat, 50, 50, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Regular.ttf'));
+                    $font->size(35);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+                $fotoAfter->text(Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('l, j F Y ; h:i a'), 50, 100, function($font){
+                    $font->file(public_path('font/roboto/Roboto-Regular.ttf'));
+                    $font->size(35);
+                    $font->color('#f56042');
+                    $font->align('left');
+                    $font->angle(360);
+                });
+            }
+            $fotoAfterSize = public_path('images/foto-bkk/'.$fotoAfterName);
+            $fotoAfter->save($fotoAfterSize, 60);
+
+            $dataFotoAfter[] = $fotoAfterName;
+        }
+
+        for ($i=0; $i < count($dataFotoAfter); $i++) {
+            $pivot = new PivotBkkLampiran;
+            $pivot->bkk_id = $bkk->id;
+            $pivot->nama = $dataFotoAfter[$i];
+            $pivot->status = 'after';
+            $pivot->save();
+        }
 
         Alert::success('Berhasil', 'Berhasil Mengkonfirmasi Lokasi BKK');
         return redirect()->route('fasilitator.bkk.index');
