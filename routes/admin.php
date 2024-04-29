@@ -27,6 +27,8 @@ Route::group(['middleware' => 'auth:admin'], function(){
     Route::get('/admin/peta-per-kelurahan', 'Admin\PetaPerKelurahanController@index')->name('admin.peta-per-kelurahan.index');
     Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/{id}', 'Admin\PetaPerKelurahanController@get_data_kelurahan');
     Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/detail/{id}', 'Admin\PetaPerKelurahanController@detail');
+    Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/{id}/filter/{tahun}', 'Admin\PetaPerKelurahanController@get_data_kelurahan_filter_tahun')->name('admin.peta-per-kelurahan.get-data-kelurahan.filter.tahun');
+    Route::get('/admin/peta-per-kelurahan/get-data-kelurahan/detail/{id}/filter/{tahun}', 'Admin\PetaPerKelurahanController@detail_filter_tahun')->name('admin.peta-per-kelurahan.get-data-kelurahan.detail.filter.tahun');
 
     //Kecamatan
     Route::get('/admin/kecamatan', 'Admin\KecamatanController@index')->name('admin.kecamatan.index');

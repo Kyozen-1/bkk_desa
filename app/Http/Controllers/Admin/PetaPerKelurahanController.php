@@ -110,4 +110,55 @@ class PetaPerKelurahanController extends Controller
 
         return response()->json(['html' => $html, 'kelurahan' => $kelurahan, 'kecamatan' => $kelurahan->kecamatan->nama]);
     }
+
+    public function get_data_kelurahan_filter_tahun($id, $tahun)
+    {
+        $bkk = Bkk::where('kelurahan_id', $id)->where('tahun', $tahun)->count();
+
+        return response()->json(['bkk' => $bkk]);
+    }
+
+    public function detail_filter_tahun($id, $tahun)
+    {
+        $bkks = Bkk::where('kelurahan_id', $id)->where('tahun', $tahun)->get();
+        $kelurahan = Kelurahan::find($id);
+        $html = '';
+        $fotoBkk = '';
+        foreach ($bkks as $bkk) {
+            if($bkk->foto_after)
+            {
+                $fotoBkk = $bkk->foto_after;
+            } else {
+                $fotoBkk = $bkk->foto_before;
+            }
+            if($bkk->aspirator)
+            {
+                $namaAspirator = $bkk->aspirator->nama;
+                $namaFraksi = $bkk->aspirator->master_fraksi->nama;
+            } else {
+                $namaAspirator = '';
+                $namaFraksi = '';
+            }
+            $html .= '<li>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row shadow bg-white text-dark">
+                                    <div class="col-6 col-md-4">
+                                        <img src="'.asset('images/foto-bkk/'.$fotoBkk).'" alt="" class="img-fluid">
+                                    </div>
+                                    <div class="col-6 col-md-8">
+                                        <p>Uraian: '.$bkk->uraian.'</p>
+                                        <p>Alamat: '.$bkk->alamat.'</p>
+                                        <p>Aspirator:  '.$namaAspirator.'</p>
+                                        <p>Partai: '.$namaFraksi.'</p>
+                                        <p>Tahun: '.$bkk->tahun.'</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>';
+        }
+
+        return response()->json(['html' => $html, 'kelurahan' => $kelurahan, 'kecamatan' => $kelurahan->kecamatan->nama]);
+    }
 }

@@ -408,6 +408,7 @@
 
         $('#btn_filter').click(function(){
             map.removeLayer(markers);
+            markers = new L.FeatureGroup();
             var filter_fraksi_id = $('#filter_fraksi_id').val();
             var filter_aspirator_id = $('#filter_aspirator_id').val();
             var filter_master_jenis_id = $('#filter_master_jenis_id').val();

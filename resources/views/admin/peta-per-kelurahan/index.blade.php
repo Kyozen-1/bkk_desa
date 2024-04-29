@@ -51,7 +51,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md">
                         <select name="filter_kecamatan_id" id="filter_kecamatan_id" class="form-control">
                             <option value="">--- Pilih Kecamatan ---</option>
                             @foreach ($kecamatan as $id => $nama)
@@ -59,12 +59,17 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md">
                         <select name="filter_kelurahan_id" id="filter_kelurahan_id" class="form-control" disabled>
                             <option value="">--- Pilih Kelurahan ---</option>
                         </select>
                     </div>
-                    <div class="col-12 col-md-4" style="text-align: center">
+                    <div class="col-12 col-md">
+                        <select name="filter_tahun" id="filter_tahun" class="form-control">
+                            <option value="">--- Pilih Semua Tahun ---</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md" style="text-align: center">
                         <button class="btn btn-icon btn-success waves-effect-waves-light" id="btn_filter"><i class="fas fa-filter"></i></button>
                     </div>
                 </div>
@@ -118,11 +123,17 @@
             subdomains:['mt0','mt1','mt2','mt3']
         }).addTo(map);
         var geoLayer;
+        var iconLabel;
+        var layerGroup = new L.LayerGroup();
+        var marker;
+        xhrPool = [];
+
         $(document).ready(function(){
             $('#filter_kecamatan_id').select2();
             $('#filter_kelurahan_id').select2();
+            $('#filter_tahun').select2();
             $.getJSON("{{ asset('geojson/kelurahan.geojson') }}", function(json){
-                geoLayer = L.geoJson(json, {
+                layerGroup = L.geoJson(json, {
                     style: function(feature)
                     {
                         return {
@@ -137,17 +148,22 @@
                         $.ajax({
                             url: "{{ url('/admin/peta-per-kelurahan/get-data-kelurahan') }}" + '/' + feature.properties.kelurahanId,
                             dataType: "json",
+                            beforeSend: function (jqXHR, settings) {
+                                xhrPool.push(jqXHR);
+                            },
                             success: function(data)
                             {
-                                var iconLabel = L.divIcon({
+                                iconLabel = L.divIcon({
                                     className: 'label-bidang',
                                     html: '<b class="text-white">'+data.bkk+'</b>',
                                     iconSize:[20,20]
                                 });
-                                L.marker(layer.getBounds().getCenter(), {icon:iconLabel}).addTo(map);
+                                marker = L.marker(layer.getBounds().getCenter(), {icon:iconLabel});
+                                layerGroup.addLayer(marker);
                             }
                         });
-                        layer.addTo(map).on('click', function(e){
+
+                        layer.on('click', function(e){
                             $.ajax({
                                 url: "{{ url('/admin/peta-per-kelurahan/get-data-kelurahan/detail') }}" + '/' + feature.properties.kelurahanId,
                                 dataType: 'json',
@@ -162,6 +178,7 @@
                         });
                     }
                 });
+                layerGroup.addTo(map);
             });
         });
 
@@ -199,6 +216,74 @@
                     map.flyTo(layer.getBounds().getCenter(), 16);
                     layer.bindPopup(layer.feature.properties.nama);
                 }
+            });
+        });
+
+        $('#filter_tahun').each(function(){
+            var year = (new Date()).getFullYear();
+            var current = year;
+            year -= 20;
+            for(var i = 0; i < 21; i++)
+            {
+                $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+            }
+        });
+
+        $('#filter_tahun').change(function(){
+            $.each(xhrPool, function(idx, jqXHR) {
+                jqXHR.abort();
+            });
+            map.removeLayer(layerGroup);
+            layerGroup = new L.LayerGroup();
+            var tahun = $(this).val();
+            $.getJSON("{{ asset('geojson/kelurahan.geojson') }}", function(json){
+                layerGroup = L.geoJson(json, {
+                    style: function(feature)
+                    {
+                        return {
+                            weight: 1,
+                            opacity: 1,
+                            color: feature.properties.warna,
+                            fillOpacity: 0.5,
+                        };
+                    },
+                    onEachFeature: function(feature, layer){
+                        // alert(feature.properties.nama)
+                        var url = "{{ route('admin.peta-per-kelurahan.get-data-kelurahan.filter.tahun', ['id' => ":id", 'tahun' => ":tahun"]) }}";
+                        url = url.replace(':id', feature.properties.kelurahanId);
+                        url = url.replace(':tahun', tahun);
+                        $.ajax({
+                            url: url,
+                            dataType: "json",
+                            success: function(data)
+                            {
+                                iconLabel = L.divIcon({
+                                    className: 'label-bidang',
+                                    html: '<b class="text-white">'+data.bkk+'</b>',
+                                    iconSize:[20,20]
+                                });
+                                marker = L.marker(layer.getBounds().getCenter(), {icon:iconLabel});
+                                layerGroup.addLayer(marker);
+                            }
+                        });
+
+                        layer.on('click', function(e){
+
+                            $.ajax({
+                                url: "{{ url('/admin/peta-per-kelurahan/get-data-kelurahan/detail') }}" + '/' + feature.properties.kelurahanId + '/filter/' + tahun,
+                                dataType: 'json',
+                                success: function(data)
+                                {
+                                    $('#list_data_bkk').html(data.html);
+                                    $('#span_nama_kelurahan').text(data.kelurahan.nama);
+                                    $('#span_nama_kecamatan').text(data.kecamatan);
+                                    $('#listDataBkkModal').modal('show');
+                                }
+                            });
+                        });
+                    }
+                });
+                layerGroup.addTo(map);
             });
         });
     </script>
