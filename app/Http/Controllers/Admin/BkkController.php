@@ -25,6 +25,7 @@ use App\Models\MasterTipeKegiatan;
 use App\Models\MasterKategoriPembangunan;
 use App\Imports\BkkImport;
 use App\Models\PivotBkkLampiran;
+use App\Exports\TemplateBkk\TemplateBkk;
 
 class BkkController extends Controller
 {
@@ -549,18 +550,8 @@ class BkkController extends Controller
     {
         // dd($request->all());
         $file = $request->file('file_impor');
-
-        $data = [
-            'master_fraksi_id' => $request->master_fraksi_id,
-            'aspirator_id' => $request->aspirator_id,
-            'tipe_kegiatan_id' => $request->tipe_kegiatan_id,
-            'master_jenis_id' => $request->master_jenis_id,
-            'master_kategori_pembangunan_id' => $request->master_kategori_pembangunan_id,
-            'kecamatan_id' => $request->kecamatan_id,
-            'kelurahan_id' => $request->kelurahan_id
-        ];
         // import data
-        Excel::import(new BkkImport($data), $file);
+        Excel::import(new BkkImport, $file);
 
         $msg = [session('import_status'), session('import_message')];
 
@@ -792,5 +783,10 @@ class BkkController extends Controller
 
         Alert::success('Berhasil', 'Berhasil Menambahkan Lampiran Foto After');
         return redirect()->route('admin.bkk.edit', ['id'=>$bkk->id]);
+    }
+
+    public function testingImporTemplate()
+    {
+        return Excel::download(new TemplateBkk, 'Template BKK.xlsx');
     }
 }

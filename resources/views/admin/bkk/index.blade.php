@@ -63,8 +63,9 @@
         <div class="row mb-3">
             <div class="col-12" style="text-align: right">
                 <a class="btn btn-outline-primary waves-effect waves-light" href="{{ route('admin.bkk.create') }}">Tambah</a>
-                <a class="btn btn-outline-secondary waves-effect waves-light" href="{{ asset('template/templat_bkk_desa_kabupaten_madiun.xlsx') }}" title="Download Contoh Template Impor BKK">Template Impor</a>
+                <a class="btn btn-outline-secondary waves-effect waves-light" href="{{ route('admin.bkk.testing-import-template') }}" title="Download Contoh Template Impor BKK">Template Impor</a>
                 <button class="btn btn-outline-success waves-effect waves-light" type="button" id="btn_impor_bkk" title="Impor BKK">Impor</button>
+                {{-- <button class="btn btn-outline-primary waves-effect waves-light" type="button" id="btn_testing_impor_bkk">Testing Impor</button> --}}
             </div>
         </div>
 
@@ -296,77 +297,6 @@
                     <form class="form-horizontal" action="{{ route('admin.bkk.impor') }}" method="POST" data-parsley-validate novalidate enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="form-group position-relative">
-                                    <label for="master_fraksi_id" class="form-label">Partai</label>
-                                    <select name="master_fraksi_id" id="master_fraksi_id" class="form-control" required>
-                                        <option value="">--- Pilih Partai ---</option>
-                                        @foreach ($master_fraksi as $id => $nama)
-                                            <option value="{{$id}}">{{$nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group position-relative mb-3">
-                                    <label for="aspirator_id" class="form-label">Aspirator</label>
-                                    <select name="aspirator_id" id="aspirator_id" class="form-control" disabled required>
-                                        <option value="">--- Pilih Aspirator ---</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="position-relative form-group mb-3">
-                                    <label for="tipe_kegiatan_id" class="form-label">Tipe Kegiatan</label>
-                                    <select name="tipe_kegiatan_id" id="tipe_kegiatan_id" class="form-control" required>
-                                        <option value="">--- Pilih Tipe Kegiatan ---</option>
-                                        @foreach ($master_tipe_kegiatan as $id => $nama)
-                                            <option value="{{$id}}">{{$nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group position-relative mb-3">
-                                    <label for="master_jenis_id" class="form-label">Jenis</label>
-                                    <select name="master_jenis_id" id="master_jenis_id" class="form-control" required>
-                                        <option value="">--- Pilih Jenis ---</option>
-                                        @foreach ($master_jenis as $id => $nama)
-                                            <option value="{{$id}}">{{$nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group position-relative">
-                                    <label for="master_kategori_pembangunan_id" class="form-label">Kategori Pembangunan</label>
-                                    <select name="master_kategori_pembangunan_id" id="master_kategori_pembangunan_id" class="form-control" required>
-                                        <option value="">--- Pilih Kategori Pembangunan ---</option>
-                                        @foreach ($master_kategori_pembangunans as $master_kategori_pembangunan)
-                                            <option value="{{$master_kategori_pembangunan->id}}">{{$master_kategori_pembangunan->nama}} ({{$master_kategori_pembangunan->satuan}})</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="position-relative form-group mb-3">
-                                    <label for="kecamatan_id" class="form-label">Kecamatan</label>
-                                    <select name="kecamatan_id" id="kecamatan_id" class="form-control" required>
-                                        <option value="">--- Pilih Kecamatan ---</option>
-                                        @foreach ($kecamatan as $id => $nama)
-                                            <option value="{{$id}}">{{$nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="position-relative form-group mb-3">
-                                    <label for="kelurahan_id" class="form-label">Kelurahan/Desa</label>
-                                    <select name="kelurahan_id" id="kelurahan_id" class="form-control" disabled required>
-                                        <option value="">--- Pilih Kelurahan ---</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <input type="file" name="file_impor" required class="dropify" data-height="150">
@@ -742,5 +672,17 @@
                 $('#kelurahan_id').prop('disabled', true);
             }
         });
+
+        // $('#btn_testing_impor_bkk').click(function(){
+        //     var url = "{{ route('admin.bkk.testing-import-template') }}";
+        //     $.ajax({
+        //         url: url,
+        //         type: 'get',
+        //         success: function(data)
+        //         {
+        //             window.location.href = url;
+        //         }
+        //     });
+        // });
     </script>
 @endsection

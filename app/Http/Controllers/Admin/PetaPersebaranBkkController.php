@@ -45,7 +45,9 @@ class PetaPersebaranBkkController extends Controller
                 'tahun' => $bkk->tahun,
                 'lat' => (float) $bkk->lat,
                 'lng' => (float) $bkk->lng,
-                'foto' => $fotoBkk
+                'foto' => $fotoBkk,
+                'apbd' => $bkk->apbd,
+                'p_apbd' => $bkk->p_apbd
             ];
         }
 

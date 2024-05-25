@@ -11,9 +11,16 @@ Route::group(['middleware' => 'auth:admin'], function(){
             });
 
             Route::prefix('grafik')->group(function(){
+                // Grafik Old Start
                 Route::get('/grafik-bkk-desa-perbulan', 'Admin\DashboardController@grafik_bkk_desa_perbulan')->name('admin.dashboard.grafik-bkk-desa-perbulan');
                 Route::get('/grafik-bkk-desa-perpartai', 'Admin\DashboardController@grafik_bkk_desa_perpartai')->name('admin.dashboard.grafik-bkk-desa-perpartai');
                 Route::get('/grafik-apbd-papbd-bkk-desa', 'Admin\DashboardController@grafik_apbd_papbd_bkk_desa')->name('admin.dashboard.grafik-apbd-papbd-bkk-desa');
+                // Grafik Old End
+
+                // Grafik Start
+                Route::get('/grafik-pertahun-anggaran-murni-dan-perubahan', 'Admin\DashboardController@grafikPertahunAnggaranMurnidanPerubahan')->name('admin.dashboard.grafik-pertahun-anggaran-murni-dan-perubahan');
+                Route::get('/grafik-bkk-kecamatan-anggaran-murni-dan-perubahan/{tahun}', 'Admin\DashboardController@grafikBkkKecamatanAnggaranMurnidanPerubahan')->name('admin.dashboard.grafik-bkk-kecamatan-anggaran-murni-dan-perubahan');
+                // Grafik End
             });
         });
     });
@@ -86,6 +93,9 @@ Route::group(['middleware' => 'auth:admin'], function(){
             Route::post('/delete-bkk-lampiran', 'Admin\BkkController@delete_bkk_lampiran')->name('admin.bkk.delete-bkk-lampiran');
             Route::post('/tambah-bkk-foto-before/{id}', 'Admin\BkkController@tambah_bkk_foto_before')->name('admin.bkk.tambah-bkk-foto-before');
             Route::post('/tambah-bkk-foto-after/{id}', 'Admin\BkkController@tambah_bkk_foto_after')->name('admin.bkk.tambah-bkk-foto-after');
+
+            // Testing Impor Template
+            Route::get('/testing-impor-template', 'Admin\BkkController@testingImporTemplate')->name('admin.bkk.testing-import-template');
         });
     });
 

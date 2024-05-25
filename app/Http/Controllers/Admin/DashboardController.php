@@ -19,301 +19,136 @@ use App\Models\Bkk;
 use App\Models\MasterFraksi;
 use App\Models\TahunPeriode;
 use App\Models\Kelurahan;
+use App\Models\Kecamatan;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $tahun_periode = TahunPeriode::where('status', 'Aktif')->first();
-        $fraksis = MasterFraksi::paginate(10);
-        $kelurahans = Kelurahan::whereHas('kecamatan', function($q){
-            $q->whereHas('kabupaten', function($q){
-                $q->where('id', 62);
-            });
-        })->pluck('nama', 'id');
-        $masterFraksis = MasterFraksi::pluck('nama', 'id');
         return view('admin.dashboard.index',[
-            'tahun_periode' => $tahun_periode,
-            'fraksis' => $fraksis,
-            'kelurahans' => $kelurahans,
-            'masterFraksis' => $masterFraksis
+            'tahun_periode' => $tahun_periode
         ]);
     }
 
-    public function change(Request $request)
-    {
-        $user = User::find(Auth::user()->id);
-        $user->color_layout = $request->color_layout;
-        $user->nav_color = $request->nav_color;
-        $user->behaviour = $request->behaviour;
-        $user->layout = $request->layout;
-        $user->radius = $request->radius;
-        $user->placement = $request->placement;
-        $user->save();
-    }
-
-    public function grafik_bkk_desa_perbulan()
-    {
-        $bulans = [
-            [
-                'id' => '01',
-                'nama' => 'Januari',
-            ],
-            [
-                'id' => '02',
-                'nama' => 'Februari',
-            ],
-            [
-                'id' => '03',
-                'nama' => 'Maret',
-            ],
-            [
-                'id' => '04',
-                'nama' => 'April',
-            ],
-            [
-                'id' => '05',
-                'nama' => 'Mei',
-            ],
-            [
-                'id' => '06',
-                'nama' => 'Juni',
-            ],
-            [
-                'id' => '07',
-                'nama' => 'Juli',
-            ],
-            [
-                'id' => '08',
-                'nama' => 'Agustus',
-            ],
-            [
-                'id' => '09',
-                'nama' => 'September',
-            ],
-            [
-                'id' => '10',
-                'nama' => 'Oktober',
-            ],
-            [
-                'id' => '11',
-                'nama' => 'November',
-            ],
-            [
-                'id' => '12',
-                'nama' => 'Desember',
-            ],
-        ];
-
-        $data_bkk = [];
-        foreach ($bulans as $bulan) {
-            $data_bkk[] = Bkk::where('status_konfirmasi', 'ya')
-                            ->whereMonth('tanggal_realisasi', $bulan['id'])
-                            ->whereYear('tanggal_realisasi', Carbon::now()->year)
-                            ->count();
-        }
-
-        $nama_bulan = [];
-        foreach ($bulans as $bulan) {
-            $nama_bulan[] = $bulan['nama'];
-        }
-
-        return response()->json([
-            'data_bkk' => $data_bkk,
-            'nama_bulan' => $nama_bulan
-        ]);
-    }
-
-    public function grafik_bkk_desa_perpartai()
-    {
-        $getPartais = MasterFraksi::all();
-        $data_bkk = [];
-        foreach ($getPartais as $getPartai) {
-            $data_bkk[] = Bkk::where('status_konfirmasi', 'ya')
-                            ->whereYear('tanggal_realisasi', Carbon::now()->year)
-                            ->whereHas('aspirator', function($q) use ($getPartai){
-                                $q->where('master_fraksi_id', $getPartai->id);
-                            })
-                            ->count();
-        }
-
-        $nama_partai = [];
-        foreach ($getPartais as $getPartai) {
-            $nama_partai[] = $getPartai->nama;
-        }
-
-        return response()->json([
-            'data_bkk' => $data_bkk,
-            'nama_partai' => $nama_partai
-        ]);
-    }
-
-    public function grafik_apbd_papbd_bkk_desa()
-    {
-        $bulans = [
-            [
-                'id' => '01',
-                'nama' => 'Januari',
-            ],
-            [
-                'id' => '02',
-                'nama' => 'Februari',
-            ],
-            [
-                'id' => '03',
-                'nama' => 'Maret',
-            ],
-            [
-                'id' => '04',
-                'nama' => 'April',
-            ],
-            [
-                'id' => '05',
-                'nama' => 'Mei',
-            ],
-            [
-                'id' => '06',
-                'nama' => 'Juni',
-            ],
-            [
-                'id' => '07',
-                'nama' => 'Juli',
-            ],
-            [
-                'id' => '08',
-                'nama' => 'Agustus',
-            ],
-            [
-                'id' => '09',
-                'nama' => 'September',
-            ],
-            [
-                'id' => '10',
-                'nama' => 'Oktober',
-            ],
-            [
-                'id' => '11',
-                'nama' => 'November',
-            ],
-            [
-                'id' => '12',
-                'nama' => 'Desember',
-            ],
-        ];
-
-        $tipes = ['apbd', 'p_apbd'];
-
-        $i = 1;
-
-        foreach ($tipes as $tipe) {
-            $dBkkDesa = [];
-            foreach ($bulans as $bulan) {
-                $dBkkDesa[] = Bkk::where('status_konfirmasi', 'ya')
-                                ->whereMonth('tanggal_realisasi', $bulan['id'])
-                                ->whereYear('tanggal_realisasi', Carbon::now()->year)
-                                ->sum($tipe);
-            }
-            if($tipe == 'apbd')
-            {
-                $name_tipe = 'APBD';
-            } else {
-                $name_tipe = 'P-APBD';
-            }
-            $data_bkk[] = [
-                'name' => $name_tipe,
-                'data' => $dBkkDesa
-            ];
-            $i++;
-        }
-
-        $nama_bulan = [];
-        foreach ($bulans as $bulan) {
-            $nama_bulan[] = $bulan['nama'];
-        }
-
-        return response()->json([
-            'data_bkk' => $data_bkk,
-            'nama_bulan' => $nama_bulan
-        ]);
-    }
-
-    public function table($tahun)
+    public function grafikPertahunAnggaranMurnidanPerubahan()
     {
         if(request()->ajax())
         {
-            $data = Bkk::where('tahun', $tahun);
-            if(request()->filter_lokasi)
-            {
-                $data = $data->where('kelurahan_id', request()->filter_lokasi);
-            }
-            if(request()->filter_fraksi)
-            {
-                $data = $data->whereHas('aspirator', function($q){
-                    $q->whereHas('master_fraksi', function($q){
-                        $q->where('id', request()->filter_fraksi);
-                    });
-                });
-            }
-            $data = $data->latest()->get();
+            $tahuns = [];
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('kelurahan_id', function($data){
-                    return $data->kelurahan->nama;
-                })
-                ->editColumn('uraian', function($data){
-                    $uraian = strip_tags(substr($data->uraian,0, 40)) . '...';
-                    return $uraian;
-                })
-                ->editColumn('tipe_kegiatan_id', function($data){
-                    return $data->master_tipe_kegiatan ? $data->master_tipe_kegiatan->nama : '';
-                })
-                ->editColumn('apbd', function($data){
-                    return 'Rp. '.number_format((int)$data->apbd, 2, ',', '.');
-                })
-                ->addColumn('fraksi', function($data){
-                    if($data->aspirator)
+            $tahunSekarang = Carbon::now()->year;
+
+            for ($i=0; $i < 10; $i++) {
+                $tahuns[] = $tahunSekarang - $i;
+            }
+
+            $tahuns = array_reverse($tahuns);
+
+            $tipeAnggarans = ['apbd', 'p_apbd'];
+
+            foreach ($tipeAnggarans as $tipeAnggaran) {
+                $dAnggaran = [];
+                foreach ($tahuns as $tahun) {
+                    if($tipeAnggaran == 'apbd')
                     {
-                        return '<img src="'.asset('images/logo-fraksi/'.$data->aspirator->master_fraksi->logo).'" style="height:3rem;">';
+                        $dAnggaran[] = Bkk::where('tahun', $tahun)->where('status_konfirmasi', 'ya')->sum('apbd');
                     }
-                })
-                ->addColumn('aspirator_id', function($data){
-                    return $data->aspirator ? $data->aspirator->nama : '';
-                })
-                ->addColumn('aksi', function($data){
-                    $id = Crypt::encryptString($data->id);
-                    return '<button type="button" name="detail" id="'.$id.'" class="detail btn btn-icon waves-effect btn-success" title="Detail Data"><i class="fas fa-eye"></i></button>';
-                })
-                ->rawColumns(['aksi', 'fraksi'])
-                ->make(true);
+
+                    if($tipeAnggaran == 'p_apbd')
+                    {
+                        $dAnggaran[] = Bkk::where('tahun', $tahun)->where('status_konfirmasi', 'ya')->sum('p_apbd');
+                    }
+                }
+
+                if($tipeAnggaran == 'apbd')
+                {
+                    $namaAnggaran = 'Anggaran Murni';
+                }
+
+                if($tipeAnggaran == 'p_apbd')
+                {
+                    $namaAnggaran = 'Anggaran Perubahan';
+                }
+
+                $data_anggaran[] = [
+                    'name' => $namaAnggaran,
+                    'data' => $dAnggaran
+                ];
+            }
+
+            return response()->json([
+                'data_anggaran' => $data_anggaran,
+                'tahun' => $tahuns
+            ]);
         }
     }
 
-    public function detail($id)
+    public function grafikBkkKecamatanAnggaranMurnidanPerubahan($tahun)
     {
-        $id = Crypt::decryptString($id);
-        $data = Bkk::find($id);
-        $array = [
-            'master_fraksi' => $data->aspirator_id ? $data->aspirator->master_fraksi->nama : '',
-            'aspirator' => $data->aspirator->nama,
-            'uraian' => $data->uraian,
-            'master_jenis' => $data->master_jenis->nama,
-            'tipe_kegiatan' => $data->master_tipe_kegiatan->nama,
-            'apbd' => 'Rp. '.number_format($data->apbd, 2),
-            'p_apbd' => 'Rp. '.number_format($data->p_apbd, 2),
-            'tanggal_realisasi' => Carbon::parse($data->tanggal_realisasi)->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('l, j F Y'),
-            'tahun' => $data->tahun,
-            'kecamatan' => $data->kelurahan->kecamatan->nama,
-            'kelurahan' => $data->kelurahan->nama,
-            'alamat' => $data->alamat,
-            'lng' => $data->lng,
-            'lat' => $data->lat,
-            'foto_before' => $data->foto_before,
-            'foto_after' => $data->foto_after,
-            'kategori_pembangunan' => $data->master_kategori_pembangunan_id?$data->master_kategori_pembangunan->nama :'',
-            'jumlah' => $data->jumlah
-        ];
+        if(request()->ajax())
+        {
+            $kecamatans = Kecamatan::where('kabupaten_id', 62)->pluck('nama', 'id');
 
-        return response()->json(['result' => $array]);
+            $tipeAnggarans = ['apbd', 'p_apbd'];
+
+            foreach ($tipeAnggarans as $tipeAnggaran) {
+                $dAnggaran = [];
+                foreach ($kecamatans as $id => $nama) {
+                    if($tipeAnggaran == 'apbd')
+                    {
+                        $tempAnggaran = Bkk::whereHas('kelurahan', function($q) use ($id){
+                                            $q->where('kecamatan_id', $id);
+                                        })->where('status_konfirmasi', 'ya');
+                        if($tahun != 'semua')
+                        {
+                            $tempAnggaran = $tempAnggaran->where('tahun', $tahun);
+                        }
+                        $tempAnggaran = $tempAnggaran->sum('apbd');
+
+                        $dAnggaran[] = $tempAnggaran;
+                    }
+
+                    if($tipeAnggaran == 'p_apbd')
+                    {
+                        $tempAnggaran = Bkk::whereHas('kelurahan', function($q) use ($id){
+                                            $q->where('kecamatan_id', $id);
+                                        })->where('status_konfirmasi', 'ya');
+                        if($tahun != 'semua')
+                        {
+                            $tempAnggaran = $tempAnggaran->where('tahun', $tahun);
+                        }
+                        $tempAnggaran = $tempAnggaran->sum('p_apbd');
+
+                        $dAnggaran[] = $tempAnggaran;
+                    }
+                }
+
+                if($tipeAnggaran == 'apbd')
+                {
+                    $namaAnggaran = 'Anggaran Murni';
+                }
+
+                if($tipeAnggaran == 'p_apbd')
+                {
+                    $namaAnggaran = 'Anggaran Perubahan';
+                }
+
+                $data_anggaran[] = [
+                    'name' => $namaAnggaran,
+                    'data' => $dAnggaran
+                ];
+            }
+
+            $nama_kecamatan = [];
+            foreach ($kecamatans as $id => $nama) {
+                $nama_kecamatan[] = $nama;
+            }
+
+            return response()->json([
+                'data_anggaran' => $data_anggaran,
+                'nama_kecamatan' => $nama_kecamatan
+            ]);
+        }
     }
 }

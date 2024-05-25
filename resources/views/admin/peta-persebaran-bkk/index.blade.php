@@ -261,7 +261,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js" integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js" integrity="sha512-j3gF1rYV2kvAKJ0Jo5CdgLgSYS7QYmBVVUjduXdoeBkc4NFV4aSRTi+Rodkiy9ht7ZYEwF+s09S43Z1Y+ujUkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        const map = L.map('map').setView([-7.616648802470493,111.65000137302656], 13);
+        const map = L.map('map').setView([-7.5433519,111.6515913], 15);
         var markers = new L.FeatureGroup();
         var popup = L.popup();
                 googleStreets = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',{
@@ -289,8 +289,23 @@
                         urlGambar = "{{asset('images/logo-fraksi')}}" + '/' + data[index].logo_partai;
                         konten_html = '<div>';
                             konten_html += '<div style="text-align:left">';
-                                konten_html += '<p>Uraian: '+data[index].uraian+'</p>';
-                                konten_html += '<p>Tahun: '+data[index].tahun+'</p>';
+                                konten_html += '<label class="form-label">Uraian: </label><span>'+data[index].uraian+'</span>';
+                                konten_html += '<br>';
+                                konten_html += '<label class="form-label">Tahun: </label><span>'+data[index].tahun+'</span>';
+                                konten_html += '<br>';
+                                konten_html += '<label class="form-label">Anggaran Murni: </label><span>'
+                                konten_html += new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(data[index].apbd)
+                                konten_html += '</span>';
+                                konten_html += '<br>';
+                                konten_html += '<label class="form-label">Anggaran Perubahan: </label><span>'
+                                konten_html += new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(data[index].p_apbd)
+                                konten_html += '</span>';
                             konten_html += '</div>';
                             konten_html += '<br>';
                             konten_html += '<div style="text-align:center">';
