@@ -1,63 +1,61 @@
 @extends('auth.fasilitator.layouts.app')
 
-@section('css')
-    <style>
-        .logo-login-default {
-            width: 100px;
-            min-height: 35px;
-            object-position: left;
-            object-fit: cover;
-            background-repeat: no-repeat;
-        }
-    </style>
-@endsection
+@section('title', 'Fasilitator | Login')
 
 @section('content')
-    <div class="col-12 col-lg-auto h-100 pb-4 px-4 pt-0 p-lg-0">
-        <div class="sw-lg-70 min-h-100 bg-foreground d-flex justify-content-center align-items-center shadow-deep py-5 full-page-content-right-border">
-        <div class="sw-lg-50 px-5">
-            <div class="sh-11 mb-5">
-                <a href="{{ url('/') }}">
-                    <div class="logo-login-default">
-                        <img src="https://3.bp.blogspot.com/-84AZcdvvo6k/XxcAS-ve2mI/AAAAAAAAatg/MsweQPwt57oqf95KhA5Qg-Y2GUnqeqp4gCLcBGAsYHQ/s1600/Lambang-Kabupaten-Madiun_237-design.png" class="img-fluid">
+<div class="wrapper">
+    <div class="section-authentication-cover">
+        <div class="">
+            <div class="row g-0">
+
+                <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center justify-content-center d-none d-xl-flex">
+
+                    <div class="card shadow-none bg-transparent shadow-none rounded-0 mb-0">
+                        <div class="card-body">
+                             <img src="{{ asset('rocker/assets/images/login-images/login-cover.svg') }}" class="img-fluid auth-img-cover-login" width="650" alt=""/>
+                        </div>
                     </div>
-                </a>
-            </div>
-            <div class="mb-5">
-            <h2 class="cta-1 mb-0 text-primary">Selamat Datang</h2>
-            <h2 class="cta-1 mb-0 text-primary">Fasilitator BKK</h2>
-            <h2 class="cta-1 text-primary">Kabupaten Madiun</h2>
-            </div>
-            <div class="mb-5">
-            {{-- <p class="h6">
-                If you are not a member, please
-                <a href="Pages.Authentication.Register.html">register</a>
-                .
-            </p> --}}
-            </div>
-            <div>
-            <form action="{{ route('fasilitator.login.submit') }}" method="POST" class="tooltip-end-bottom" novalidate>
-                @csrf
-                <div class="mb-3 filled form-group tooltip-end-top">
-                    <i data-acorn-icon="email"></i>
-                    <input class="form-control" placeholder="Email" name="email" />
+
                 </div>
-                <div class="mb-3 filled form-group tooltip-end-top">
-                    <i data-acorn-icon="lock-off"></i>
-                    <input class="form-control pe-7" name="password" type="password" placeholder="Password" />
-                    {{-- <a class="text-small position-absolute t-3 e-3" href="Pages.Authentication.ForgotPassword.html">Forgot?</a> --}}
+
+                <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
+                    <div class="card rounded-0 m-3 shadow-none bg-transparent mb-0">
+                        <div class="card-body p-sm-5">
+                            <div class="">
+                                <div class="mb-3 text-center">
+                                    <img src="https://3.bp.blogspot.com/-84AZcdvvo6k/XxcAS-ve2mI/AAAAAAAAatg/MsweQPwt57oqf95KhA5Qg-Y2GUnqeqp4gCLcBGAsYHQ/s1600/Lambang-Kabupaten-Madiun_237-design.png" width="60" alt="">
+                                </div>
+                                <div class="text-center mb-4">
+                                    <h5 class="">Fasilitator</h5>
+                                </div>
+                                <div class="form-body">
+                                    <form action="{{ route('fasilitator.login.submit') }}" method="POST" class="row g-3">
+                                        @csrf
+                                        <div class="col-12">
+                                            <label for="inputEmailAddress" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Masukkan Email">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="inputChoosePassword" class="form-label">Password</label>
+                                            <div class="input-group" id="show_hide_password">
+                                                <input type="password" class="form-control border-end-0" name="password" id="inputChoosePassword" placeholder="Masukkan Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class="bx bx-hide"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Masuk</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-lg btn-primary mb-3">Login</button>
-                {{-- <div>
-                    <p class="h6">
-                        Jika ingin login sebagai OPD,
-                        <a href="{{ route('opd.login') }}">Login OPD</a>
-                        .
-                    </p>
-                </div> --}}
-            </form>
+
             </div>
-        </div>
+            <!--end row-->
         </div>
     </div>
+</div>
 @endsection

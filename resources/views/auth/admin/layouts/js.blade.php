@@ -1,30 +1,27 @@
-<!-- Vendor Scripts Start -->
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/jquery-3.5.1.min.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/OverlayScrollbars.min.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/autoComplete.min.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/clamp.min.js') }}"></script>
-
-<script src="{{ asset('acorn/acorn-elearning-portal/icon/acorn-icons.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/icon/acorn-icons-interface.js') }}"></script>
-
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/jquery.validate/jquery.validate.min.js') }}"></script>
-
-<script src="{{ asset('acorn/acorn-elearning-portal/js/vendor/jquery.validate/additional-methods.min.js') }}"></script>
-
-<!-- Vendor Scripts End -->
-
-<!-- Template Base Scripts Start -->
-<script src="{{ asset('acorn/acorn-elearning-portal/js/base/helpers.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/base/globals.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/base/nav.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/base/search.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/base/settings.js') }}"></script>
-<!-- Template Base Scripts End -->
-<!-- Page Specific Scripts Start -->
-
-<script src="{{ asset('acorn/acorn-elearning-portal/js/pages/auth.login.js') }}"></script>
-
-<script src="{{ asset('acorn/acorn-elearning-portal/js/common.js') }}"></script>
-<script src="{{ asset('acorn/acorn-elearning-portal/js/scripts.js') }}"></script>
-@yield('js')
+<!--end wrapper-->
+	<!-- Bootstrap JS -->
+	<script src="{{ asset('rocker/assets/js/bootstrap.bundle.min.js') }}"></script>
+	<!--plugins-->
+	<script src="{{ asset('rocker/assets/js/jquery.min.js') }}"></script>
+	<script src="{{ asset('rocker/assets/plugins/simplebar/js/simplebar.min.js') }}"></script>
+	<script src="{{ asset('rocker/assets/plugins/metismenu/js/metisMenu.min.js') }}"></script>
+	<script src="{{ asset('rocker/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
+	<!--Password show & hide js -->
+	<script>
+		$(document).ready(function () {
+			$("#show_hide_password a").on('click', function (event) {
+				event.preventDefault();
+				if ($('#show_hide_password input').attr("type") == "text") {
+					$('#show_hide_password input').attr('type', 'password');
+					$('#show_hide_password i').addClass("bx-hide");
+					$('#show_hide_password i').removeClass("bx-show");
+				} else if ($('#show_hide_password input').attr("type") == "password") {
+					$('#show_hide_password input').attr('type', 'text');
+					$('#show_hide_password i').removeClass("bx-hide");
+					$('#show_hide_password i').addClass("bx-show");
+				}
+			});
+		});
+	</script>
+	<!--app JS-->
+	<script src="{{ asset('rocker/assets/js/app.js') }}"></script>
