@@ -77,6 +77,7 @@
 			<p class="mb-0">© {{Carbon::now()->year}} Bappeda Madiun All Rights Reserved.</p>
 		</footer>
 	</div>
+    @include('sweetalert::alert')
 	@include('admin.layouts.js')
 </body>
 
