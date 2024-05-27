@@ -5,7 +5,7 @@
         <li>
     @endif
         <a href="{{ route('admin.dashboard.index') }}">
-            <div class="parent-icon"><i class='bx bx-cookie'></i>
+            <div class="parent-icon"><i class='bx bx-home-alt'></i>
             </div>
             <div class="menu-title">Dashboard</div>
         </a>
@@ -40,7 +40,7 @@
         <li>
     @endif
         <a href="{{ route('admin.bkk.index') }}">
-            <div class="parent-icon"><i class='bx bx-cookie'></i>
+            <div class="parent-icon"><i class='bx bx-data'></i>
             </div>
             <div class="menu-title">BKK</div>
         </a>

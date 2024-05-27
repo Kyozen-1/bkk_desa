@@ -1,6 +1,6 @@
-@extends('fasilitator.layouts.app')
+@extends('admin.layouts.app')
 
-@section('title', 'Fasilitator | BKK')
+@section('title', 'Admin | BKK')
 
 @section('subtitle', 'BKK')
 
@@ -15,87 +15,65 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h2 class="small-title">Filter Data</h2>
-                            <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group position-relative">
-                                        <label for="filter_kecamatan_id" class="form-label">Kecamatan</label>
-                                        <select name="filter_kecamatan_id" id="filter_kecamatan_id" class="form-control">
-                                            <option value="">Semua</option>
-                                            @foreach ($master_kecamatan as $id => $nama)
-                                                <option value="{{$id}}">{{$nama}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group position-relative">
-                                        <label for="filter_kelurahan_id" class="form-label">Kelurahan</label>
-                                        <select name="filter_kelurahan_id" id="filter_kelurahan_id" class="form-control" disabled>
-                                            <option value="">Semua</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group position-relative">
-                                        <label for="filter_tahun" class="form-label">Tahun</label>
-                                        <select name="filter_tahun" id="filter_tahun" class="form-control">
-                                            <option value="">Semua</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group position-relative">
-                                        <label for="filter_fraksi_id" class="form-label">Partai</label>
-                                        <select name="filter_fraksi_id" id="filter_fraksi_id" class="form-control">
-                                            <option value="">Semua</option>
-                                            @foreach ($master_fraksi as $id => $nama)
-                                                <option value="{{$id}}">{{$nama}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group position-relative">
-                                        <div class="form-group position-relative">
-                                            <label for="filter_aspirator_id" class="form-label">Aspirator</label>
-                                            <select name="filter_aspirator_id" id="filter_aspirator_id" class="form-control" disabled>
-                                                <option value="">Semua</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row mb-3">
+                <div class="col-12" style="text-align: right">
+                    <a class="btn btn-outline-primary waves-effect waves-light" href="{{ route('admin.bkk.create') }}">Tambah</a>
+                    <a class="btn btn-outline-secondary waves-effect waves-light" href="{{ route('admin.bkk.testing-import-template') }}" title="Download Contoh Template Impor BKK">Template Impor</a>
+                    <button class="btn btn-outline-success waves-effect waves-light" type="button" id="btn_impor_bkk" title="Impor BKK">Impor</button>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="bkk_table" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Kelurahan/Desa</th>
-                                            <th>Uraian</th>
-                                            <th>Kegiatan</th>
-                                            <th>Nilai APBD</th>
-                                            <th>Tahun</th>
-                                            <th>Partai</th>
-                                            <th>Foto</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+        </div>
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="small-title">Filter Data</h2>
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <div class="form-group position-relative">
+                                <label for="filter_kecamatan_id" class="form-label">Kecamatan</label>
+                                <select name="filter_kecamatan_id" id="filter_kecamatan_id" class="form-control">
+                                    <option value="">Semua</option>
+                                    @foreach ($master_kecamatan as $id => $nama)
+                                        <option value="{{$id}}">{{$nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group position-relative">
+                                <label for="filter_kelurahan_id" class="form-label">Kelurahan</label>
+                                <select name="filter_kelurahan_id" id="filter_kelurahan_id" class="form-control" disabled>
+                                    <option value="">Semua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group position-relative">
+                                <label for="filter_tahun" class="form-label">Tahun</label>
+                                <select name="filter_tahun" id="filter_tahun" class="form-control">
+                                    <option value="">Semua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group position-relative">
+                                <label for="filter_fraksi_id" class="form-label">Partai</label>
+                                <select name="filter_fraksi_id" id="filter_fraksi_id" class="form-control">
+                                    <option value="">Semua</option>
+                                    @foreach ($master_fraksi as $id => $nama)
+                                        <option value="{{$id}}">{{$nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group position-relative">
+                                <div class="form-group position-relative">
+                                    <label for="filter_aspirator_id" class="form-label">Aspirator</label>
+                                    <select name="filter_aspirator_id" id="filter_aspirator_id" class="form-control" disabled>
+                                        <option value="">Semua</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,6 +81,34 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="bkk_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kelurahan/Desa</th>
+                                    <th>Uraian</th>
+                                    <th>Kegiatan</th>
+                                    <th>Nilai APBD</th>
+                                    <th>Tahun</th>
+                                    <th>Partai</th>
+                                    <th>Foto</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
@@ -238,6 +244,34 @@
             </div>
         </div>
     </div>
+
+    <div id="imporModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imporModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="imporModalLabel">Impor BKK</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span id="form_result"></span>
+                    <form class="form-horizontal" action="{{ route('admin.bkk.impor') }}" method="POST" data-parsley-validate novalidate enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="file" name="file_impor" required class="dropify" data-height="150">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light waves-effect width-md waves-light" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary waves-effect width-md waves-light">Save</button>
+                </div>
+            </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 @endsection
 
 @section('js')
@@ -252,6 +286,7 @@
 	<script src="{{ asset('rocker/assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(document).ready(function(){
+            $('.dropify').dropify();
             $('#filter_kecamatan_id').select2();
             $('#filter_kelurahan_id').select2();
             $('#filter_tahun').select2();
@@ -264,7 +299,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('fasilitator.bkk.index') }}",
+                        url: "{{ route('admin.bkk.index') }}",
                         data: {
                             filter_kecamatan_id:filter_kecamatan_id,
                             filter_kelurahan_id:filter_kelurahan_id,
@@ -367,12 +402,40 @@
                 $('#bkk_table').DataTable().destroy();
                 bkk_datatable(filter_kecamatan_id, filter_kelurahan_id, filter_tahun, filter_fraksi_id, filter_aspirator_id);
             });
+
+            $('#master_fraksi_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#aspirator_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#tipe_kegiatan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#master_jenis_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#master_kategori_pembangunan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#kecamatan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
+
+            $('#kelurahan_id').select2({
+                dropdownParent: $("#imporModal")
+            });
         });
 
         $(document).on('click', '.detail', function(){
             var id = $(this).attr('id');
             $.ajax({
-                url: "{{ url('/fasilitator/bkk/detail') }}" + '/' + id,
+                url: "{{ url('/admin/bkk/detail') }}" + '/' + id,
                 dataType: "json",
                 success: function(data)
                 {
@@ -424,6 +487,7 @@
                         });
                         $('#detailFotoSesudah').html(html);
                     }
+
                     $('#detailModal').modal('show');
                 }
             });
@@ -433,7 +497,7 @@
             if($(this).val() != '')
             {
                 $.ajax({
-                    url: "{{ route('fasilitator.bkk.get-kelurahan') }}",
+                    url: "{{ route('admin.bkk.get-kelurahan') }}",
                     method: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -459,7 +523,7 @@
             if($(this).val() != '')
             {
                 $.ajax({
-                    url: "{{ route('fasilitator.bkk.get-aspirator') }}",
+                    url: "{{ route('admin.bkk.get-aspirator') }}",
                     method: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -488,6 +552,77 @@
             for(var i = 0; i < 21; i++)
             {
                 $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+            }
+        });
+
+        $('#btn_impor_bkk').click(function(){
+            $('.dropify-clear').click();
+            $("[name='master_fraksi_id']").val('').trigger('change');
+
+            $("[name='aspirator_id']").val('').trigger('change');
+
+            $("[name='tipe_kegiatan_id']").val('').trigger('change');
+
+            $("[name='master_jenis_id']").val('').trigger('change');
+
+            $("[name='master_kategori_pembangunan_id']").val('').trigger('change');
+
+            $("[name='kecamatan_id']").val('').trigger('change');
+
+            $("[name='kelurahan_id']").val('').trigger('change');
+
+            $('#imporModal').modal('show');
+        });
+
+        $('#master_fraksi_id').change(function(){
+            if($(this).val() != '')
+            {
+                $.ajax({
+                    url: "{{ route('admin.bkk.get-aspirator') }}",
+                    method: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:$(this).val()
+                    },
+                    success: function(data)
+                    {
+                        $('#aspirator_id').empty();
+                        $('#aspirator_id').prop('disabled', false);
+                        $('#aspirator_id').append('<option value="">--- Pilih Aspirator---</option>');
+                        $.each(data, function(id, nama){
+                            $('#aspirator_id').append(new Option(nama, id));
+                        });
+                    }
+                });
+            } else {
+                $("[name='aspirator_id']").val('').trigger('change');
+                $('#aspirator_id').prop('disabled', true);
+            }
+        });
+
+        $('#kecamatan_id').change(function(){
+            if($(this).val() != '')
+            {
+                $.ajax({
+                    url: "{{ route('admin.bkk.get-kelurahan') }}",
+                    method: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:$(this).val()
+                    },
+                    success: function(data)
+                    {
+                        $('#kelurahan_id').empty();
+                        $('#kelurahan_id').prop('disabled', false);
+                        $('#kelurahan_id').append('<option value="">--- Pilih Kelurahan---</option>');
+                        $.each(data, function(id, nama){
+                            $('#kelurahan_id').append(new Option(nama, id));
+                        });
+                    }
+                });
+            } else {
+                $("[name='kelurahan_id']").val('').trigger('change');
+                $('#kelurahan_id').prop('disabled', true);
             }
         });
     </script>
