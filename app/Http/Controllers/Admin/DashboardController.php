@@ -20,6 +20,7 @@ use App\Models\MasterFraksi;
 use App\Models\TahunPeriode;
 use App\Models\Kelurahan;
 use App\Models\Kecamatan;
+use App\Models\MasterTipeKegiatan;
 
 class DashboardController extends Controller
 {
@@ -148,6 +149,71 @@ class DashboardController extends Controller
             return response()->json([
                 'data_anggaran' => $data_anggaran,
                 'nama_kecamatan' => $nama_kecamatan
+            ]);
+        }
+    }
+
+    public function grafikBkkBerdasarkanTipeKegiatan($tahun)
+    {
+        if(request()->ajax())
+        {
+            $tipeKegiatans = MasterTipeKegiatan::pluck('nama', 'id');
+            $tipeAnggarans = ['apbd', 'p_apbd'];
+
+            foreach ($tipeAnggarans as $tipeAnggaran) {
+                $dAnggaran = [];
+                foreach ($tipeKegiatans as $id => $nama) {
+                    if($tipeAnggaran == 'apbd')
+                    {
+                        $tempAnggaran = Bkk::where('tipe_kegiatan_id', $id)
+                                        ->where('status_konfirmasi', 'ya');
+                        if($tahun != 'semua')
+                        {
+                            $tempAnggaran = $tempAnggaran->where('tahun', $tahun);
+                        }
+                        $tempAnggaran = $tempAnggaran->sum('apbd');
+
+                        $dAnggaran[] = $tempAnggaran;
+                    }
+
+                    if($tipeAnggaran == 'p_apbd')
+                    {
+                        $tempAnggaran = Bkk::where('tipe_kegiatan_id', $id)
+                                        ->where('status_konfirmasi', 'ya');
+                        if($tahun != 'semua')
+                        {
+                            $tempAnggaran = $tempAnggaran->where('tahun', $tahun);
+                        }
+                        $tempAnggaran = $tempAnggaran->sum('p_apbd');
+
+                        $dAnggaran[] = $tempAnggaran;
+                    }
+                }
+
+                if($tipeAnggaran == 'apbd')
+                {
+                    $namaAnggaran = 'Anggaran Murni';
+                }
+
+                if($tipeAnggaran == 'p_apbd')
+                {
+                    $namaAnggaran = 'Anggaran Perubahan';
+                }
+
+                $data_anggaran[] = [
+                    'name' => $namaAnggaran,
+                    'data' => $dAnggaran
+                ];
+            }
+
+            $nama_tipe_kegiatan = [];
+            foreach ($tipeKegiatans as $id => $nama) {
+                $nama_tipe_kegiatan[] = $nama;
+            }
+
+            return response()->json([
+                'data_anggaran' => $data_anggaran,
+                'nama_tipe_kegiatan' => $nama_tipe_kegiatan
             ]);
         }
     }

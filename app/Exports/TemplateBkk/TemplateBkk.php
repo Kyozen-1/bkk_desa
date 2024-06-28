@@ -254,8 +254,8 @@ class Sheet2Export implements WithTitle, withEvents
                 $number_partai = 0;
                 foreach ($partaies as $partai) {
                     $number_partai++;
-                    $sheet->setCellValue('A'. $number_partai+1, $number_partai);
-                    $sheet->setCellValue('B'.$number_partai+1, $partai->nama);
+                    $sheet->setCellValue('A'. ($number_partai+1), $number_partai);
+                    $sheet->setCellValue('B'.($number_partai+1), $partai->nama);
                 }
                 // Partai End
 
@@ -268,9 +268,9 @@ class Sheet2Export implements WithTitle, withEvents
                 foreach($aspirators as $aspirator)
                 {
                     $number_aspirator++;
-                    $sheet->setCellValue('D'.$number_aspirator+1, $number_aspirator);
-                    $sheet->setCellValue('E'.$number_aspirator+1, $aspirator->master_fraksi->nama);
-                    $sheet->setCellValue('F'.$number_aspirator+1, $aspirator->nama);
+                    $sheet->setCellValue('D'.($number_aspirator+1), $number_aspirator);
+                    $sheet->setCellValue('E'.($number_aspirator+1), $aspirator->master_fraksi->nama);
+                    $sheet->setCellValue('F'.($number_aspirator+1), $aspirator->nama);
                 }
                 // Aspirator End
 
@@ -281,8 +281,8 @@ class Sheet2Export implements WithTitle, withEvents
                 $number_tipe_kegiatan = 0;
                 foreach ($tipeKegiatans as $tipeKegiatan) {
                     $number_tipe_kegiatan++;
-                    $sheet->setCellValue('H'.$number_tipe_kegiatan+1, $number_tipe_kegiatan);
-                    $sheet->setCellValue('I'.$number_tipe_kegiatan+1, $tipeKegiatan->nama);
+                    $sheet->setCellValue('H'.($number_tipe_kegiatan+1), $number_tipe_kegiatan);
+                    $sheet->setCellValue('I'.($number_tipe_kegiatan+1), $tipeKegiatan->nama);
                 }
                 // Tipe Kegiatan End
 
@@ -294,8 +294,8 @@ class Sheet2Export implements WithTitle, withEvents
                 foreach($jenises as $jenis)
                 {
                     $number_jenis++;
-                    $sheet->setCellValue('K'.$number_jenis+1, $number_jenis);
-                    $sheet->setCellValue('L'.$number_jenis+1, $jenis->nama);
+                    $sheet->setCellValue('K'.($number_jenis+1), $number_jenis);
+                    $sheet->setCellValue('L'.($number_jenis+1), $jenis->nama);
                 }
                 // Jenis End
 
@@ -306,8 +306,8 @@ class Sheet2Export implements WithTitle, withEvents
                 $number_kategori_pembangunan = 0;
                 foreach ($kategoriPembangunans as $kategoriPembangunan) {
                     $number_kategori_pembangunan++;
-                    $sheet->setCellValue('N'.$number_kategori_pembangunan+1, $number_kategori_pembangunan);
-                    $sheet->setCellValue('O'.$number_kategori_pembangunan+1, $kategoriPembangunan->nama);
+                    $sheet->setCellValue('N'.($number_kategori_pembangunan+1), $number_kategori_pembangunan);
+                    $sheet->setCellValue('O'.($number_kategori_pembangunan+1), $kategoriPembangunan->nama);
                 }
                 // Kategori Pembangunan End
 
@@ -318,8 +318,8 @@ class Sheet2Export implements WithTitle, withEvents
                 $number_kecamatan = 0;
                 foreach ($kecamatans as $kecamatan) {
                     $number_kecamatan++;
-                    $sheet->setCellValue('Q'.$number_kecamatan+1, $number_kecamatan);
-                    $sheet->setCellValue('R'.$number_kecamatan+1, $kecamatan->nama);
+                    $sheet->setCellValue('Q'.($number_kecamatan+1), $number_kecamatan);
+                    $sheet->setCellValue('R'.($number_kecamatan+1), $kecamatan->nama);
                 }
                 // Kecamatan End
 
@@ -334,9 +334,9 @@ class Sheet2Export implements WithTitle, withEvents
                 foreach($kelurahans as $kelurahan)
                 {
                     $number_kelurahan++;
-                    $sheet->setCellValue('T'.$number_kelurahan+1, $number_kelurahan);
-                    $sheet->setCellValue('U'.$number_kelurahan+1, $kelurahan->kecamatan->nama);
-                    $sheet->setCellValue('V'.$number_kelurahan+1, $kelurahan->nama);
+                    $sheet->setCellValue('T'.($number_kelurahan+1), $number_kelurahan);
+                    $sheet->setCellValue('U'.($number_kelurahan+1), $kelurahan->kecamatan->nama);
+                    $sheet->setCellValue('V'.($number_kelurahan+1), $kelurahan->nama);
                 }
             }
         ];

@@ -10,6 +10,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/fontawesome.min.css" integrity="sha512-RvQxwf+3zJuNwl4e0sZjQeX7kUa3o82bDETpgVCH2RiwYSZVDdFJ7N/woNigN/ldyOOoKw8584jM4plQdt8bhA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="{{ asset('dropify/css/dropify.min.css') }}">
 <style>
+    .select2-selection__rendered {
+        line-height: 40px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 41px !important;
+    }
+    .select2-selection__arrow {
+        height: 36px !important;
+    }
     .zoom {
         transition: transform .2s;
     }
@@ -65,6 +74,23 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 mb-5">
+            <div class="card card-grafik">
+                <div class="card-body">
+                    <div class="row" id="row_label_grafik_bkk_berdasarkan_tipe_kegiatan">
+                        <div class="col-md-6" style="text-align: left;">
+                            <h2 class="small-title text-hover">Grafik BKK Berdasarkan Tipe Kegiatan</h2>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <select name="filter_tahun_grafik_bkk_berdasarkan_tipe_kegiatan" id="filter_tahun_grafik_bkk_berdasarkan_tipe_kegiatan" class="form-control">
+                                <option value="semua">Semua</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grafik-container" id="grafik_bkk_berdasarkan_tipe_kegiatan"></div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -80,6 +106,7 @@
     <script>
         $(document).ready(function(){
             $('#filter_tahun').select2();
+            $('#filter_tahun_grafik_bkk_berdasarkan_tipe_kegiatan').select2();
             $.ajax({
                 url: "{{ route('admin.dashboard.grafik-pertahun-anggaran-murni-dan-perubahan') }}",
                 dataType: "json",
@@ -259,9 +286,109 @@
                     chart_grafik_bkk_kecamatan_anggaran_murni_dan_perubahan.render();
                 }
             });
+
+            $.ajax({
+                url: "{{ route('admin.dashboard.grafik-bkk-berdasarkan-tipe-kegiatan', ['tahun' => 'semua']) }}",
+                dataType: "json",
+                success: function(data)
+                {
+                    var grafik_bkk_berdasarkan_tipe_kegiatan = {
+                        series: data.data_anggaran,
+                        chart: {
+                            type: 'bar',
+                            height: 500,
+                            stacked: true,
+                            toolbar: {
+                                show: false
+                            },
+                            zoom: {
+                                enabled: true
+                            }
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                legend: {
+                                    position: 'bottom',
+                                    offsetX: -10,
+                                    offsetY: 0
+                                }
+                            }
+                        }],
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                borderRadius: 20,
+                            },
+                        },
+                        dataLabels: {
+                            formatter: function (val) {
+                                var value =  new Intl.NumberFormat("id-ID", {
+                                                    style: "currency",
+                                                    currency: "IDR"
+                                                }).format(val);
+                                return value;
+                            }
+                        },
+                        xaxis: {
+                            categories: data.nama_tipe_kegiatan,
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Jumlah Anggaran'
+                            },
+                            labels: {
+                                formatter: function (val) {
+                                    var value =  new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(val);
+                                    return value;
+                                }
+                            },
+                        },
+                        tooltip: {
+                            shared: true,
+                            intersect: false,
+                            style: {
+                                fontSize: '2rem',
+                            },
+                            y: {
+                                formatter: function (val) {
+                                    var value =  new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(val);
+                                    return value;
+                                }
+                            },
+                        },
+                        legend: {
+                            position: 'right',
+                            offsetY: 40
+                        },
+                        fill: {
+                            opacity: 1
+                        }
+                    };
+
+                    var chart_grafik_bkk_berdasarkan_tipe_kegiatan = new ApexCharts(document.querySelector("#grafik_bkk_berdasarkan_tipe_kegiatan"), grafik_bkk_berdasarkan_tipe_kegiatan);
+                    chart_grafik_bkk_berdasarkan_tipe_kegiatan.render();
+                }
+            });
         });
 
         $('#filter_tahun').each(function(){
+            var year = (new Date()).getFullYear();
+            var current = year;
+            year -= 10;
+            for(var i = 0; i < 21; i++)
+            {
+                $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+            }
+        });
+
+        $('#filter_tahun_grafik_bkk_berdasarkan_tipe_kegiatan').each(function(){
             var year = (new Date()).getFullYear();
             var current = year;
             year -= 10;
@@ -367,6 +494,106 @@
 
                     var chart_grafik_bkk_kecamatan_anggaran_murni_dan_perubahan = new ApexCharts(document.querySelector("#grafik_bkk_kecamatan_anggaran_murni_dan_perubahan"), grafik_bkk_kecamatan_anggaran_murni_dan_perubahan);
                     chart_grafik_bkk_kecamatan_anggaran_murni_dan_perubahan.render();
+                }
+            })
+        })
+
+        $('#filter_tahun_grafik_bkk_berdasarkan_tipe_kegiatan').change(function(){
+            var value = $(this).val();
+            var url = "{{ route('admin.dashboard.grafik-bkk-berdasarkan-tipe-kegiatan', ['tahun' => ":value"]) }}";
+            url = url.replace(':value', value);
+
+            $.ajax({
+                url:url,
+                dataType: "json",
+                success: function(data)
+                {
+                    $('#grafik_bkk_berdasarkan_tipe_kegiatan').remove();
+
+                    $('#row_label_grafik_bkk_berdasarkan_tipe_kegiatan').after(`<div class="grafik-container" id="grafik_bkk_berdasarkan_tipe_kegiatan"></div>`);
+
+                    var grafik_bkk_berdasarkan_tipe_kegiatan = {
+                        series: data.data_anggaran,
+                        chart: {
+                            type: 'bar',
+                            height: 500,
+                            stacked: true,
+                            toolbar: {
+                                show: false
+                            },
+                            zoom: {
+                                enabled: true
+                            }
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                legend: {
+                                    position: 'bottom',
+                                    offsetX: -10,
+                                    offsetY: 0
+                                }
+                            }
+                        }],
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                borderRadius: 20,
+                            },
+                        },
+                        dataLabels: {
+                            formatter: function (val) {
+                                var value =  new Intl.NumberFormat("id-ID", {
+                                                    style: "currency",
+                                                    currency: "IDR"
+                                                }).format(val);
+                                return value;
+                            }
+                        },
+                        xaxis: {
+                            categories: data.nama_tipe_kegiatan,
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Jumlah Anggaran'
+                            },
+                            labels: {
+                                formatter: function (val) {
+                                    var value =  new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(val);
+                                    return value;
+                                }
+                            },
+                        },
+                        tooltip: {
+                            shared: true,
+                            intersect: false,
+                            style: {
+                                fontSize: '2rem',
+                            },
+                            y: {
+                                formatter: function (val) {
+                                    var value =  new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR"
+                                                    }).format(val);
+                                    return value;
+                                }
+                            },
+                        },
+                        legend: {
+                            position: 'right',
+                            offsetY: 40
+                        },
+                        fill: {
+                            opacity: 1
+                        }
+                    };
+
+                    var chart_grafik_bkk_berdasarkan_tipe_kegiatan = new ApexCharts(document.querySelector("#grafik_bkk_berdasarkan_tipe_kegiatan"), grafik_bkk_berdasarkan_tipe_kegiatan);
+                    chart_grafik_bkk_berdasarkan_tipe_kegiatan.render();
                 }
             })
         })

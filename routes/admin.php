@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth:admin'], function(){
                 // Grafik Start
                 Route::get('/grafik-pertahun-anggaran-murni-dan-perubahan', 'Admin\DashboardController@grafikPertahunAnggaranMurnidanPerubahan')->name('admin.dashboard.grafik-pertahun-anggaran-murni-dan-perubahan');
                 Route::get('/grafik-bkk-kecamatan-anggaran-murni-dan-perubahan/{tahun}', 'Admin\DashboardController@grafikBkkKecamatanAnggaranMurnidanPerubahan')->name('admin.dashboard.grafik-bkk-kecamatan-anggaran-murni-dan-perubahan');
+                Route::get('/grafik-bkk-berdasarkan-tipe-kegiatan/{tahun}', 'Admin\DashboardController@grafikBkkBerdasarkanTipeKegiatan')->name('admin.dashboard.grafik-bkk-berdasarkan-tipe-kegiatan');
                 // Grafik End
             });
         });
